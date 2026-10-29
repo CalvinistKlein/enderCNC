@@ -1,0 +1,512 @@
+{
+  "orcaslicer_beds": [
+    {
+      "bed_id": "Bed_01_Spindle_Collar_And_Z_Cap",
+      "title": "Bed 1: Mill Headstock DM62659 Spindle Shroud + Integrated Z-Guideway & Stepper Arch Tower",
+      "config": {
+        "layer_height": "0.28",
+        "initial_layer_print_height": "0.28",
+        "line_width": "0.45",
+        "wall_loops": "5",
+        "sparse_infill_density": "20%",
+        "sparse_infill_pattern": "gyroid",
+        "top_shell_layers": "4",
+        "bottom_shell_layers": "4"
+      },
+      "slice_state": "done",
+      "stats": {
+        "breakdown": {
+          "layers": [],
+          "metrics": {},
+          "mode": "normal",
+          "roles": [
+            {
+              "filament_g": 137.07098240647838,
+              "filament_mm": 45957.65474479817,
+              "flow_mm3_s": {
+                "max": 8.663775444030762,
+                "mean": 4.25438656989358
+              },
+              "role": "inner_wall",
+              "time_pct": 33.523889101852674,
+              "time_s": 28914.07411158747
+            },
+            {
+              "filament_g": 34.84323496289841,
+              "filament_mm": 11682.365840701406,
+              "flow_mm3_s": {
+                "max": 7.7011332511901855,
+                "mean": 4.218507785271359
+              },
+              "role": "outer_wall",
+              "time_pct": 8.592971341235975,
+              "time_s": 7411.365949946223
+            },
+            {
+              "filament_g": 0.9604653614276706,
+              "filament_mm": 322.0283002272058,
+              "flow_mm3_s": {
+                "max": 3.9167022705078125,
+                "mean": 2.626789878692925
+              },
+              "role": "overhang_perimeter",
+              "time_pct": 0.3489261351670354,
+              "time_s": 300.94587477715686
+            },
+            {
+              "filament_g": 96.68209287848813,
+              "filament_mm": 32415.92178377899,
+              "flow_mm3_s": {
+                "max": 6.729526519775391,
+                "mean": 6.4194738361683825
+              },
+              "role": "sparse_infill",
+              "time_pct": 39.44249546484987,
+              "time_s": 34018.82262382249
+            },
+            {
+              "filament_g": 25.28537810173691,
+              "filament_mm": 8477.773023069867,
+              "flow_mm3_s": {
+                "max": 8.909213066101074,
+                "mean": 5.36231911999611
+              },
+              "role": "internal_solid_infill",
+              "time_pct": 6.029390596872562,
+              "time_s": 5200.298987865564
+            },
+            {
+              "filament_g": 5.206976688186106,
+              "filament_mm": 1745.8139768068359,
+              "flow_mm3_s": {
+                "max": 2.9496707916259766,
+                "mean": 2.8082832143096055
+              },
+              "role": "top_surface",
+              "time_pct": 1.8613456154621502,
+              "time_s": 1605.3950336501002
+            },
+            {
+              "filament_g": 1.353442559617186,
+              "filament_mm": 453.7871165710987,
+              "flow_mm3_s": {
+                "max": 3.5047502517700195,
+                "mean": 3.4589894515938515
+              },
+              "role": "bottom_surface",
+              "time_pct": 0.42108703825054244,
+              "time_s": 363.18405046663247
+            },
+            {
+              "filament_g": 3.7664458336542244,
+              "filament_mm": 1262.8275817324725,
+              "flow_mm3_s": {
+                "max": 2.2414352893829346,
+                "mean": 2.173495293666279
+              },
+              "role": "bridge",
+              "time_pct": 1.717681823373609,
+              "time_s": 1481.4862139132456
+            },
+            {
+              "filament_g": 5.786942123505724,
+              "filament_mm": 1940.2668856018952,
+              "flow_mm3_s": {
+                "max": 4.5656514167785645,
+                "mean": 4.38722731259458
+              },
+              "role": "internal_bridge",
+              "time_pct": 1.533666318331168,
+              "time_s": 1322.7743790687528
+            },
+            {
+              "filament_g": 0.2130556071741012,
+              "filament_mm": 71.43405456097528,
+              "flow_mm3_s": {
+                "max": 4.939095973968506,
+                "mean": 4.938005239839717
+              },
+              "role": "skirt",
+              "time_pct": 0.041672239789636634,
+              "time_s": 35.9419584646821
+            },
+            {
+              "filament_g": 0.05965099456887856,
+              "filament_mm": 20.000001207044914,
+              "flow_mm3_s": {
+                "max": 4.625542640686035,
+                "mean": 4.111959439278395
+              },
+              "role": "custom",
+              "time_pct": 0.013613545878003527,
+              "time_s": 11.741569519042969
+            }
+          ],
+          "total_time_s": 86249.1640625
+        },
+        "estimated_time": "23h 57m 29s",
+        "estimated_time_seconds": 86249.1640625,
+        "filament_used_g": 311.2286651240986,
+        "filament_used_mm": 104349.87330905588,
+        "total_cost": 6.224573302481972
+      },
+      "warnings": [
+        {
+          "code": "1000C001",
+          "level": 3,
+          "message": "bed_temperature_too_high_than_filament"
+        }
+      ],
+      "editor_render": "/home/calvin/.gemini/antigravity/scratch/ender3-router-project/renders/orca_Bed_01_Spindle_Collar_And_Z_Cap_editor.png",
+      "preview_render": "/home/calvin/.gemini/antigravity/scratch/ender3-router-project/renders/orca_Bed_01_Spindle_Collar_And_Z_Cap_preview.png",
+      "gcode_path": "/home/calvin/.gemini/antigravity/scratch/ender3-router-project/gcode/Bed_01_Spindle_Collar_And_Z_Cap.gcode",
+      "gcode_size_bytes": 45913524
+    },
+    {
+      "bed_id": "Bed_02_TwinRail_Y_Outriggers",
+      "title": "Bed 2: Ground-Contacting Concrete Y-Base Sill + 2x Twin-Rail Y Outriggers",
+      "config": {
+        "layer_height": "0.28",
+        "initial_layer_print_height": "0.28",
+        "line_width": "0.45",
+        "wall_loops": "5",
+        "sparse_infill_density": "15%",
+        "sparse_infill_pattern": "gyroid",
+        "top_shell_layers": "4",
+        "bottom_shell_layers": "4"
+      },
+      "slice_state": "done",
+      "stats": {
+        "breakdown": {
+          "layers": [],
+          "metrics": {},
+          "mode": "normal",
+          "roles": [
+            {
+              "filament_g": 79.22946386707189,
+              "filament_mm": 26564.341205497563,
+              "flow_mm3_s": {
+                "max": 6.448022842407227,
+                "mean": 4.286681437553319
+              },
+              "role": "inner_wall",
+              "time_pct": 32.20198909111789,
+              "time_s": 15567.589980397956
+            },
+            {
+              "filament_g": 22.314573227822656,
+              "filament_mm": 7481.710820023543,
+              "flow_mm3_s": {
+                "max": 5.1051788330078125,
+                "mean": 4.237748591582372
+              },
+              "role": "outer_wall",
+              "time_pct": 9.201820425486373,
+              "time_s": 4448.488167978881
+            },
+            {
+              "filament_g": 0.31833678161431644,
+              "filament_mm": 106.7331075122561,
+              "flow_mm3_s": {
+                "max": 2.67885422706604,
+                "mean": 2.652808379992767
+              },
+              "role": "overhang_perimeter",
+              "time_pct": 0.20294220833143922,
+              "time_s": 98.10950125101954
+            },
+            {
+              "filament_g": 28.21836610522178,
+              "filament_mm": 9461.155849021105,
+              "flow_mm3_s": {
+                "max": 6.6926093101501465,
+                "mean": 6.4194072501376125
+              },
+              "role": "sparse_infill",
+              "time_pct": 18.156752616397974,
+              "time_s": 8777.621758326888
+            },
+            {
+              "filament_g": 52.66780750026677,
+              "filament_mm": 17658.652989623533,
+              "flow_mm3_s": {
+                "max": 7.6483941078186035,
+                "mean": 5.353668462296005
+              },
+              "role": "internal_solid_infill",
+              "time_pct": 18.954576492425776,
+              "time_s": 9163.318273639306
+            },
+            {
+              "filament_g": 9.608939470589348,
+              "filament_mm": 3221.719979677809,
+              "flow_mm3_s": {
+                "max": 2.808656692504883,
+                "mean": 2.8029364503973397
+              },
+              "role": "top_surface",
+              "time_pct": 5.992623587955389,
+              "time_s": 2897.047963719815
+            },
+            {
+              "filament_g": 4.764067562281934,
+              "filament_mm": 1597.3138031430726,
+              "flow_mm3_s": {
+                "max": 3.5008552074432373,
+                "mean": 3.460023446055946
+              },
+              "role": "bottom_surface",
+              "time_pct": 2.4053046809619465,
+              "time_s": 1162.8100657134783
+            },
+            {
+              "filament_g": 4.830622107560438,
+              "filament_mm": 1619.6284518010664,
+              "flow_mm3_s": {
+                "max": 2.2222812175750732,
+                "mean": 2.2107940503781096
+              },
+              "role": "bridge",
+              "time_pct": 3.708995437016328,
+              "time_s": 1793.0606720987707
+            },
+            {
+              "filament_g": 5.312614573934874,
+              "filament_mm": 1781.232629215815,
+              "flow_mm3_s": {
+                "max": 4.460052013397217,
+                "mean": 4.38715342531558
+              },
+              "role": "internal_bridge",
+              "time_pct": 2.6482549739130987,
+              "time_s": 1280.2609019204974
+            },
+            {
+              "filament_g": 0.31552273987964463,
+              "filament_mm": 105.78960542152191,
+              "flow_mm3_s": {
+                "max": 4.940526962280273,
+                "mean": 4.9379971514171395
+              },
+              "role": "skirt",
+              "time_pct": 0.10889237919936925,
+              "time_s": 52.64245964959264
+            },
+            {
+              "filament_g": 1.2452817395597109,
+              "filament_mm": 417.522565622051,
+              "flow_mm3_s": {
+                "max": 3.5170557498931885,
+                "mean": 3.456591642031107
+              },
+              "role": "brim",
+              "time_pct": 0.605284882145051,
+              "time_s": 292.6162989467848
+            },
+            {
+              "filament_g": 0.05965099456887856,
+              "filament_mm": 20.000001207044914,
+              "flow_mm3_s": {
+                "max": 4.625542640686035,
+                "mean": 4.111959439278395
+              },
+              "role": "custom",
+              "time_pct": 0.024287760278945792,
+              "time_s": 11.741569519042969
+            }
+          ],
+          "total_time_s": 48343.56640625
+        },
+        "estimated_time": "13h 25m 43s",
+        "estimated_time_seconds": 48343.56640625,
+        "filament_used_g": 208.88524506385215,
+        "filament_used_mm": 70035.80100776617,
+        "total_cost": 4.1777049012770435
+      },
+      "warnings": [
+        {
+          "code": "1000C001",
+          "level": 3,
+          "message": "bed_temperature_too_high_than_filament"
+        }
+      ],
+      "editor_render": "/home/calvin/.gemini/antigravity/scratch/ender3-router-project/renders/orca_Bed_02_TwinRail_Y_Outriggers_editor.png",
+      "preview_render": "/home/calvin/.gemini/antigravity/scratch/ender3-router-project/renders/orca_Bed_02_TwinRail_Y_Outriggers_preview.png",
+      "gcode_path": "/home/calvin/.gemini/antigravity/scratch/ender3-router-project/gcode/Bed_02_TwinRail_Y_Outriggers.gcode",
+      "gcode_size_bytes": 14539130
+    },
+    {
+      "bed_id": "Bed_03_Concrete_Sleeves_And_X_Girder",
+      "title": "Bed 3: Tapered Ground-Contacting Mill Column + Streamlined X-Crossrail Half",
+      "config": {
+        "layer_height": "0.28",
+        "initial_layer_print_height": "0.28",
+        "line_width": "0.45",
+        "wall_loops": "5",
+        "sparse_infill_density": "15%",
+        "sparse_infill_pattern": "gyroid",
+        "top_shell_layers": "4",
+        "bottom_shell_layers": "4"
+      },
+      "slice_state": "done",
+      "stats": {
+        "breakdown": {
+          "layers": [],
+          "metrics": {},
+          "mode": "normal",
+          "roles": [
+            {
+              "filament_g": 315.42846559919366,
+              "filament_mm": 105757.9967997957,
+              "flow_mm3_s": {
+                "max": 6.946463108062744,
+                "mean": 4.512005014309374
+              },
+              "role": "inner_wall",
+              "time_pct": 52.11084979992307,
+              "time_s": 60437.1335944352
+            },
+            {
+              "filament_g": 91.04002518785217,
+              "filament_mm": 30524.228922016857,
+              "flow_mm3_s": {
+                "max": 7.7011332511901855,
+                "mean": 4.2680644643697985
+              },
+              "role": "outer_wall",
+              "time_pct": 15.738373872332179,
+              "time_s": 18253.05493833479
+            },
+            {
+              "filament_g": 0.812148469000882,
+              "filament_mm": 272.300076096161,
+              "flow_mm3_s": {
+                "max": 3.511052370071411,
+                "mean": 2.639283807032983
+              },
+              "role": "overhang_perimeter",
+              "time_pct": 0.21718035995137758,
+              "time_s": 251.88148876605555
+            },
+            {
+              "filament_g": 19.63171723439281,
+              "filament_mm": 6582.193159090553,
+              "flow_mm3_s": {
+                "max": 6.614131927490234,
+                "mean": 6.419567615870554
+              },
+              "role": "sparse_infill",
+              "time_pct": 5.398276445738283,
+              "time_s": 6260.814321459387
+            },
+            {
+              "filament_g": 57.96783751957376,
+              "filament_mm": 19435.66622384726,
+              "flow_mm3_s": {
+                "max": 8.091197967529297,
+                "mean": 5.360407444471676
+              },
+              "role": "internal_solid_infill",
+              "time_pct": 9.07292654516069,
+              "time_s": 10522.600875013624
+            },
+            {
+              "filament_g": 9.850475874578455,
+              "filament_mm": 3302.7031788053496,
+              "flow_mm3_s": {
+                "max": 2.9353582859039307,
+                "mean": 2.801096402584155
+              },
+              "role": "top_surface",
+              "time_pct": 2.5459433494687036,
+              "time_s": 2952.7347745522857
+            },
+            {
+              "filament_g": 3.765184641888791,
+              "filament_mm": 1262.4047247958317,
+              "flow_mm3_s": {
+                "max": 3.4923830032348633,
+                "mean": 3.46488576605269
+              },
+              "role": "bottom_surface",
+              "time_pct": 0.8007441469824998,
+              "time_s": 928.6872344617732
+            },
+            {
+              "filament_g": 5.949838121157677,
+              "filament_mm": 1994.8832448630958,
+              "flow_mm3_s": {
+                "max": 2.2207560539245605,
+                "mean": 2.2016784981405477
+              },
+              "role": "bridge",
+              "time_pct": 1.925446539133659,
+              "time_s": 2233.0948384329677
+            },
+            {
+              "filament_g": 3.965227706764736,
+              "filament_mm": 1329.4758871108224,
+              "flow_mm3_s": {
+                "max": 4.63523530960083,
+                "mean": 4.387295310704426
+              },
+              "role": "internal_bridge",
+              "time_pct": 0.773843713463214,
+              "time_s": 897.4886433699867
+            },
+            {
+              "filament_g": 0.3009457960039469,
+              "filament_mm": 100.90219495643163,
+              "flow_mm3_s": {
+                "max": 4.942388534545898,
+                "mean": 4.937976720051234
+              },
+              "role": "skirt",
+              "time_pct": 0.04296591901718849,
+              "time_s": 49.83102362789214
+            },
+            {
+              "filament_g": 1.0406870204205652,
+              "filament_mm": 348.92530820309804,
+              "flow_mm3_s": {
+                "max": 3.490455150604248,
+                "mean": 3.4565884453161293
+              },
+              "role": "brim",
+              "time_pct": 0.21088967855340068,
+              "time_s": 244.58568081993144
+            },
+            {
+              "filament_g": 0.05965099456887856,
+              "filament_mm": 20.000001207044914,
+              "flow_mm3_s": {
+                "max": 4.625542640686035,
+                "mean": 4.111959439278395
+              },
+              "role": "custom",
+              "time_pct": 0.010123960704823052,
+              "time_s": 11.741569519042969
+            }
+          ],
+          "total_time_s": 115978.0234375
+        },
+        "estimated_time": "1d 8h 12m 58s",
+        "estimated_time_seconds": 115978.0234375,
+        "filament_used_g": 509.8122002444664,
+        "filament_used_mm": 170931.67972078893,
+        "total_cost": 10.196244004889328
+      },
+      "warnings": [
+        {
+          "code": "1000C001",
+          "level": 3,
+          "message": "bed_temperature_too_high_than_filament"
+        }
+      ],
+      "editor_render": "/home/calvin/.gemini/antigravity/scratch/ender3-router-project/renders/orca_Bed_03_Concrete_Sleeves_And_X_Girder_editor.png",
+      "preview_render": "/home/calvin/.gemini/antigravity/scratch/ender3-router-project/renders/orca_Bed_03_Concrete_Sleeves_And_X_Girder_preview.png",
+      "gcode_path": "/home/calvin/.gemini/antigravity/scratch/ender3-router-project/gcode/Bed_03_Concrete_Sleeves_And_X_Girder.gcode",
+      "gcode_size_bytes": 20951066
+    }
+  ]
+}
