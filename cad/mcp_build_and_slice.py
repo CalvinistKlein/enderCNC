@@ -249,12 +249,10 @@ obj_f.Shape = s_front
 set_visual(obj_f, CLR_EXTRUSION)
 donor_grp.addObject(obj_f)
 
-s_rear = normalize_shape_to_origin(solids[421])
-s_rear.rotate(Base.Vector(0, 0, 0), Base.Vector(0, 1, 0), 90)
-s_rear.rotate(Base.Vector(0, 0, 0), Base.Vector(1, 0, 0), 90)
-s_rear = normalize_shape_to_origin(s_rear)
-s_rear.translate(Base.Vector(0.0, 190.0, 0.0))
-obj_r = doc.addObject("Part::Feature", "Donor_Solid421_2040_RearBaseTie_13_00in")
+# Rear Base Cross-Tie uses the 2020 x 330 mm (`Solid[3]`) extrusion so the heavy 2040 x 330 mm (`Solid[421]`) can serve as the Primary X-Bridge Crossbar!
+s_rear = normalize_shape_to_origin(solids[3])
+s_rear.translate(Base.Vector(0.0, 190.0, 20.0))
+obj_r = doc.addObject("Part::Feature", "Donor_Solid3_2020_RearBaseTie_13_00in")
 obj_r.Shape = s_rear
 set_visual(obj_r, CLR_EXTRUSION)
 donor_grp.addObject(obj_r)
@@ -268,16 +266,21 @@ for sol_id, side, x_col in [(1, "Left", -165.0), (0, "Right", 165.0)]:
     donor_grp.addObject(obj_c)
 
 z_high_deck = 160.0
-s_xmain = normalize_shape_to_origin(solids[44])
-s_xmain.translate(Base.Vector(0.0, -40.0, z_high_deck))
-obj_xm = doc.addObject("Part::Feature", "Donor_Solid44_2020_XBridgePrimary_13_58in")
+# Heavy 2040 x 330 mm (`Solid[421]`, 40 mm tall x 20 mm deep) swapped into the Primary Lower X-Bridge Crossbar Way!
+s_xmain = normalize_shape_to_origin(solids[421])
+s_xmain.rotate(Base.Vector(0, 0, 0), Base.Vector(0, 1, 0), 90)
+s_xmain.rotate(Base.Vector(0, 0, 0), Base.Vector(1, 0, 0), 90)
+s_xmain = normalize_shape_to_origin(s_xmain)
+s_xmain.translate(Base.Vector(0.0, -40.0, z_high_deck - 10.0))
+obj_xm = doc.addObject("Part::Feature", "Donor_Solid421_2040_XBridgePrimary_13_00in")
 obj_xm.Shape = s_xmain
 set_visual(obj_xm, CLR_EXTRUSION)
 donor_grp.addObject(obj_xm)
 
-s_xback = normalize_shape_to_origin(solids[3])
+# 2020 x 345 mm (`Solid[44]`) serves as the Upper Rear X-Bridge Torsion Rebar inside the concrete box-beam
+s_xback = normalize_shape_to_origin(solids[44])
 s_xback.translate(Base.Vector(0.0, -8.0, z_high_deck + 76.0))
-obj_xb = doc.addObject("Part::Feature", "Donor_Solid3_2020_XBridgeTorsion_13_00in")
+obj_xb = doc.addObject("Part::Feature", "Donor_Solid44_2020_XBridgeTorsion_13_58in")
 obj_xb.Shape = s_xback
 set_visual(obj_xb, CLR_EXTRUSION)
 donor_grp.addObject(obj_xb)
@@ -569,10 +572,10 @@ o_xsad.Shape = x_saddle
 set_visual(o_xsad, CLR_STEEL_BLK)
 motion_grp.addObject(o_xsad)
 
-# 4x X-Axis POM V-Slot Rollers (`Rollers.step`) engaging top (Z=182mm) and bottom (Z=158mm) V-grooves of `Solid[44]` (Y=-40mm)
+# 4x X-Axis POM V-Slot Rollers (`Rollers.step`) engaging top (Z=192mm) and bottom (Z=148mm) V-grooves of the 40mm-tall 2040 X-Crossbar (`Solid[421]`, Y=-40mm)
 x_rollers_list, x_spacers_list = [], []
 for rx_w in [-32.0, 32.0]:
-    for rz_w in [z_high_deck - 12.0, z_high_deck + 24.0]:
+    for rz_w in [z_high_deck - 22.0, z_high_deck + 34.0]:
         rw = roller_shape.copy()
         rw.rotate(Base.Vector(0, 0, 0), Base.Vector(1, 0, 0), 90)
         rw = normalize_shape_to_origin(rw)
@@ -1014,8 +1017,8 @@ import FreeCAD as App
 doc = App.getDocument("Ender3_Donor_ZeroCut_CNC")
 z_offset = -(1.5 * 25.4)
 for name in [
-    "Donor_Solid44_2020_XBridgePrimary_13_58in",
-    "Donor_Solid3_2020_XBridgeTorsion_13_00in",
+    "Donor_Solid421_2040_XBridgePrimary_13_00in",
+    "Donor_Solid44_2020_XBridgeTorsion_13_58in",
     "Motion_X_Saddle_Carriage_Plate",
     "Motion_X_4x_VSlot_POM_Rollers",
     "Motion_X_4x_Coaxial_Spacers_And_Eccentric_Nuts",

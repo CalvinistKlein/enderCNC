@@ -24,11 +24,11 @@ Decomposing Creality's official [`01 MAIN ASM Ender_3.STEP`](https://github.com/
 | :--- | :--- | :--- | :--- |
 | **`Solid[4]` & `Solid[5]`** | $15.75\text{"}$ ($400\text{ mm}$) $\times 2040$ (Qty 2) | Left & Right Z-Uprights | **Twin Y-Axis Bed Rails** ($11.0\text{"}$ travel; eliminates single-rail bed seesawing) |
 | **`Solid[0]` & `Solid[1]`** | $11.42\text{"}$ ($290\text{ mm}$) $\times 4040$ (Qty 2) | Left & Right Heavy Base Legs | **Heavy $4040$ Vertical Gantry Columns** (encased in 5-wall PLA+ concrete towers) |
-| **`Solid[44]`** | $13.58\text{"}$ ($345\text{ mm}$) $\times 2020$ (Qty 1) | X-Axis Carriage Rail | **Primary Lower X-Bridge Rail** ($10.5\text{"}$ X-travel) |
-| **`Solid[3]`** | $13.00\text{"}$ ($330\text{ mm}$) $\times 2020$ (Qty 1) | Top Frame Crossbar | **Secondary Upper X-Bridge Torsion Rail** (cast into the concrete X-girder) |
+| **`Solid[421]`** | $13.00\text{"}$ ($330\text{ mm}$) $\times 2040$ (Qty 1) | Y-Axis Center Spine | **Heavy $2040$ Primary X-Bridge Crossbar Way** ($6.6\times$ stiffer vertically than a $2020$, $40\text{ mm}$ V-roller stance) |
+| **`Solid[44]`** | $13.58\text{"}$ ($345\text{ mm}$) $\times 2020$ (Qty 1) | X-Axis Carriage Rail | **Upper Rear X-Bridge Torsion Rebar** (cast into the concrete X-girder) |
 | **`Solid[2]`** | $9.84\text{"}$ ($250\text{ mm}$) $\times 4040$ (Qty 1) | Center H-Frame Crossbar | **Front Heavy $4040$ Base Cross-Tie** |
-| **`Solid[421]`** | $13.00\text{"}$ ($330\text{ mm}$) $\times 2040$ (Qty 1) | Y-Axis Center Spine | **Rear $2040$ Base Cross-Tie** |
-| **`Z threaded rod.step`** | $14.37\text{"}$ ($365\text{ mm}$) T8$\times$8 | Z-Axis Leadscrew | **Uncut Z-Axis Leadscrew** (passes through top 608ZZ bearing cap; cutting optional) |
+| **`Solid[3]`** | $13.00\text{"}$ ($330\text{ mm}$) $\times 2020$ (Qty 1) | Top Frame Crossbar | **Rear $2020$ Base Cross-Tie** (base ways already supported along 90% of span by concrete sills) |
+| **`Z threaded rod.step`** | $14.37\text{"}$ ($365\text{ mm}$) T8$\times$8 | Z-Axis Leadscrew | **Enclosed Z-Axis Leadscrew** (coaxial inside the dual-`608ZZ` Z-Arch Tower) |
 
 ---
 
