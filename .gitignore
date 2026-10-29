@@ -1,0 +1,6 @@
+# Ignore full 340MB upstream Ender-3 clone so repo stays lightweight on GitHub
+ender3_cad_repo/
+__pycache__/
+*.pyc
+*.FCBak
+*.FCStd1

@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
+</head>
+<body class="bg-transparent text-[var(--foreground)] antialiased p-2 select-none">
+  <div class="bg-[var(--card)] border border-[var(--border)] rounded-xl p-3 shadow-sm">
+    <div class="flex flex-wrap items-center justify-between gap-2 pb-2 border-b border-[var(--border)]">
+      <div>
+        <h3 class="text-sm font-semibold text-[var(--foreground)]">
+          Interactive 3D Assembly: Official Ender 3 STEP &#8594; Zero-Cut CNC Mill
+        </h3>
+        <p class="text-xs text-[var(--muted-foreground)]">
+          Drag to orbit &bull; Slide to animate the 8 uncut Ender 3 extrusions swapping into CNC position
+        </p>
+      </div>
+      <div class="flex items-center gap-1.5">
+        <button id="bHigh" class="px-2.5 py-1 rounded text-xs font-medium bg-[var(--primary)] text-[var(--primary-foreground)]">
+          3.5" Z (Wood)
+        </button>
+        <button id="bLow" class="px-2.5 py-1 rounded text-xs font-medium bg-[var(--secondary)] text-[var(--secondary-foreground)]">
+          2.0" Z (Aluminum)
+        </button>
+        <button id="bCut" class="px-2.5 py-1 rounded text-xs font-medium border border-[var(--border)]">
+          X-Ray Concrete
+        </button>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-2 gap-3 my-2 px-2 py-1.5 rounded bg-[var(--content)] border border-[var(--border)]">
+      <div class="flex items-center gap-2">
+        <span class="text-xs whitespace-nowrap">Ender 3</span>
+        <input id="sMorph" type="range" min="0" max="100" value="100" class="w-full accent-orange-500 cursor-pointer" />
+        <span class="text-xs font-semibold text-orange-500 whitespace-nowrap">CNC</span>
+      </div>
+      <div class="flex items-center gap-2">
+        <span class="text-xs whitespace-nowrap">Jog X/Y:</span>
+        <input id="sJog" type="range" min="-100" max="100" value="0" class="w-full accent-emerald-500 cursor-pointer" />
+        <span id="lJog" class="text-xs font-mono whitespace-nowrap">0.0", 0.0"</span>
+      </div>
+    </div>
+
+    <div class="relative rounded-lg overflow-hidden border border-[var(--border)] bg-black/20">
+      <canvas id="c3d" width="680" height="290" class="w-full h-[275px] cursor-grab active:cursor-grabbing block"></canvas>
+      <div class="absolute bottom-1.5 left-2 right-2 flex justify-between text-xs px-2 py-0.5 rounded bg-black/65 text-white pointer-events-none">
+        <span id="readout">Zero-Cut CNC | 10.5" X &times; 11.0" Y &times; 3.5" Z | 8 Uncut Factory Beams</span>
+        <span>Sky=15.75" 2040 Twin-Y | Violet=11.42" 4040 Columns | Orange=PLA+ &amp; Concrete</span>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const cv = document.getElementById('c3d'), cx = cv.getContext('2d');
+    let rx = -0.42, ry = 0.62, zm = 0.98, drag = false, lx = 0, ly = 0, morph = 1, deck = 'high', xray = true, jog = 0;
+    const lerp = (a, b, t) => a + (b - a) * t;
+
+    function proj(x, y, z) {
+      const cz = z - 125;
+      const cy1 = Math.cos(ry), sy1 = Math.sin(ry), x1 = x * cy1 - y * sy1, y1 = x * sy1 + y * cy1;
+      const cx1 = Math.cos(rx), sx1 = Math.sin(rx), y2 = y1 * cx1 - cz * sx1, z2 = y1 * sx1 + cz * cx1;
+      const sc = (410 * zm) / (680 + y2 * 0.45);
+      return { x: cv.width * 0.5 + x1 * sc, y: cv.height * 0.55 - z2 * sc, d: y2 };
+    }
+
+    function box(x, y, z, dx, dy, dz, col, a) {
+      const hx = dx/2, hy = dy/2, hz = dz/2;
+      const v = [
+        [x-hx,y-hy,z-hz],[x+hx,y-hy,z-hz],[x+hx,y+hy,z-hz],[x-hx,y+hy,z-hz],
+        [x-hx,y-hy,z+hz],[x+hx,y-hy,z+hz],[x+hx,y+hy,z+hz],[x-hx,y+hy,z+hz]
+      ].map(p => proj(p[0], p[1], p[2]));
+      return [[0,1,2,3,0.7],[4,5,6,7,1.08],[0,1,5,4,0.92],[2,3,7,6,0.78],[1,2,6,5,0.86],[3,0,4,7,0.82]].map(f => {
+        const pts = [v[f[0]], v[f[1]], v[f[2]], v[f[3]]];
+        return { pts, d: (pts[0].d+pts[1].d+pts[2].d+pts[3].d)/4, col, sh: f[4], a };
+      });
+    }
+
+    function shade(hex, f) {
+      const n = parseInt(hex.slice(1), 16);
+      return `rgb(${Math.min(255,((n>>16)&255)*f|0)},${Math.min(255,((n>>8)&255)*f|0)},${Math.min(255,(n&255)*f|0)})`;
+    }
+
+    function draw() {
+      cx.clearRect(0, 0, cv.width, cv.height);
+      let faces = [];
+      const zb = lerp(255, deck === 'high' ? 164 : 126, morph);
+      // Solid[4,5]: Twin 15.75" (400mm) 2040 Y-Rails
+      [-1, 1].forEach(s => faces.push(...box(lerp(s*125, s*135, morph), 0, lerp(220, 20, morph), 20, lerp(40, 400, morph), lerp(400, 40, morph), '#38bdf8', 1)));
+      // Solid[0,1]: Two Heavy 11.42" (290mm) 4040 Vertical Columns
+      [-1, 1].forEach(s => faces.push(...box(lerp(s*125, s*155, morph), lerp(0, -10, morph), lerp(20, 185, morph), 40, lerp(290, 40, morph), lerp(40, 290, morph), '#a78bfa', 1)));
+      // Solid[2] Front 4040 Tie + Solid[421] Rear 2040 Tie
+      faces.push(...box(0, lerp(0, -180, morph), 20, lerp(40, 250, morph), lerp(290, 40, morph), 40, '#94a3b8', 1));
+      faces.push(...box(0, lerp(0, 180, morph), lerp(430, 20, morph), lerp(250, 330, morph), 20, 40, '#94a3b8', 1));
+      // Solid[44] 13.58" X-Bridge Primary + Solid[3] 13.00" X-Bridge Torsion Bar
+      faces.push(...box(0, -42, zb, 345, 20, 20, '#facc15', 1));
+      faces.push(...box(0, -2, zb + 22, 330, 20, 20, '#eab308', 1));
+      // Worktable (Hotbed + Y-Plate)
+      faces.push(...box(0, jog * 1.1, 48, 267, 279, 8, '#475569', 0.92));
+      // PLA+ Concrete Sleeves & Cores
+      if (morph > 0.15) {
+        const ca = (xray ? 0.50 : 0.95) * morph;
+        [-155, 155].forEach(xc => {
+          faces.push(...box(xc, -10, 180, 84, 84, 280, '#f97316', ca));
+          if (xray) faces.push(...box(xc, -10, 180, 74, 74, 268, '#57534e', 0.65 * morph));
+        });
+        faces.push(...box(0, -6, zb + 12, 320, 52, 62, '#f97316', ca));
+      }
+      // HF 62659 Router + Air-Cooled Collar
+      const hx = jog * 1.1;
+      faces.push(...box(hx, -92, zb, 88, 68, 50, '#10b981', 1));
+      faces.push(...box(hx, -92, zb + 42, 65, 65, 135, '#ef4444', 1));
+      faces.push(...box(hx, -92, zb - 42, 12, 12, 36, '#e2e8f0', 1));
+
+      faces.sort((a, b) => b.d - a.d);
+      for (const f of faces) {
+        cx.save(); cx.globalAlpha = f.a; cx.fillStyle = shade(f.col, f.sh);
+        cx.strokeStyle = 'rgba(15,23,42,0.4)'; cx.lineWidth = 0.7;
+        cx.beginPath(); cx.moveTo(f.pts[0].x, f.pts[0].y);
+        for (let i = 1; i < 4; i++) cx.lineTo(f.pts[i].x, f.pts[i].y);
+        cx.closePath(); cx.fill(); cx.stroke(); cx.restore();
+      }
+    }
+
+    cv.onmousedown = e => { drag = true; lx = e.clientX; ly = e.clientY; };
+    window.onmouseup = () => drag = false;
+    window.onmousemove = e => {
+      if (!drag) return;
+      ry += (e.clientX - lx) * 0.009;
+      rx = Math.max(-1.35, Math.min(0.2, rx + (e.clientY - ly) * 0.009));
+      lx = e.clientX; ly = e.clientY; draw();
+    };
+    document.getElementById('sMorph').oninput = e => { morph = e.target.value / 100; draw(); };
+    document.getElementById('sJog').oninput = e => {
+      jog = +e.target.value;
+      document.getElementById('lJog').textContent = `${(jog/100*5.25).toFixed(1)}", ${(jog/100*5.5).toFixed(1)}"`;
+      draw();
+    };
+    document.getElementById('bHigh').onclick = () => {
+      deck = 'high';
+      document.getElementById('readout').textContent = 'High-Deck Mode | 10.5" X × 11.0" Y × 3.5" Z (Wood / 2×4s)';
+      draw();
+    };
+    document.getElementById('bLow').onclick = () => {
+      deck = 'low';
+      document.getElementById('readout').textContent = 'Low-Deck Mode | 10.5" X × 11.0" Y × 2.0" Z (1/4" Aluminum & Brass)';
+      draw();
+    };
+    document.getElementById('bCut').onclick = () => { xray = !xray; draw(); };
+    draw();
+  </script>
+</body>
+</html>

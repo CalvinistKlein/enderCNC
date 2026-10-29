@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>RepStrap Zero-Cut 3D CAD Visualizer</title>
+  <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
+</head>
+<body class="bg-[var(--background)] text-[var(--foreground)] antialiased p-4 select-none">
+  <div class="max-w-5xl mx-auto bg-[var(--card)] border border-[var(--border)] rounded-xl p-4 shadow-sm">
+    <div class="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-[var(--border)]">
+      <div>
+        <h2 class="text-base font-semibold text-[var(--foreground)]">
+          FreeCAD Digital Twin: Zero-Cut Ender 3 &#8594; 10.5" &times; 11.0" &times; 3.5" CNC Mill
+        </h2>
+        <p class="text-xs text-[var(--muted-foreground)]">
+          Drag to orbit 3D model &bull; Scroll to zoom &bull; Use sliders to morph Stock Ender 3 beams into CNC positions
+        </p>
+      </div>
+      <div class="flex flex-wrap items-center gap-2">
+        <button id="btnDeckHigh" class="px-3 py-1.5 rounded-lg text-xs font-medium bg-[var(--primary)] text-[var(--primary-foreground)]">
+          High-Deck: 3.5" Z (Wood / 2&times;4)
+        </button>
+        <button id="btnDeckLow" class="px-3 py-1.5 rounded-lg text-xs font-medium bg-[var(--secondary)] text-[var(--secondary-foreground)]">
+          Low-Deck: 2.0" Z (1/4" Aluminum)
+        </button>
+        <button id="btnXray" class="px-3 py-1.5 rounded-lg text-xs font-medium border border-[var(--border)] text-[var(--foreground)]">
+          Concrete Cutaway: ON
+        </button>
+      </div>
+    </div>
+
+    <!-- Sliders for Morphing & Exploded View -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 my-3 bg-[var(--content)] p-3 rounded-lg border border-[var(--border)]">
+      <div class="flex items-center gap-3">
+        <span class="text-xs font-medium whitespace-nowrap">Stock Ender 3</span>
+        <input id="morphSlider" type="range" min="0" max="100" value="100" class="w-full accent-orange-500 cursor-pointer" />
+        <span class="text-xs font-semibold text-orange-500 whitespace-nowrap">Zero-Cut CNC (100%)</span>
+      </div>
+      <div class="flex items-center gap-3">
+        <span class="text-xs font-medium whitespace-nowrap">Spindle X/Y Test Jog:</span>
+        <input id="jogSlider" type="range" min="-100" max="100" value="0" class="w-full accent-emerald-500 cursor-pointer" />
+        <span id="jogLabel" class="text-xs font-mono whitespace-nowrap">X: 0.0" | Y: 0.0"</span>
+      </div>
+    </div>
+
+    <!-- Main 3D Canvas + Part Legend -->
+    <div class="grid grid-cols-1 lg:grid-cols-4 gap-4">
+      <div class="lg:col-span-3 relative rounded-lg overflow-hidden border border-[var(--border)] bg-black/20">
+        <canvas id="cadCanvas" width="760" height="440" class="w-full h-[380px] cursor-grab active:cursor-grabbing block"></canvas>
+        <div class="absolute bottom-2 left-2 right-2 flex flex-wrap justify-between items-center pointer-events-none text-xs px-2 py-1 rounded bg-black/60 text-white">
+          <span id="statusReadout">Mode: Zero-Cut CNC | Envelope: 10.5" X &times; 11.0" Y &times; 3.5" Z | Aluminum Cuts: 0</span>
+          <span>1 Roll PLA+ (34.9 oz) + 5.8 lbs Screened Concrete</span>
+        </div>
+      </div>
+
+      <!-- Color-Coded Beam Swap Legend -->
+      <div class="flex flex-col justify-between space-y-2 text-xs">
+        <div class="p-2.5 rounded-lg border border-[var(--border)] bg-[var(--content)] space-y-2">
+          <div class="font-semibold text-[var(--foreground)] border-b border-[var(--border)] pb-1">
+            Uncut Ender 3 Beams (0 Cuts)
+          </div>
+          <div class="flex items-start gap-2">
+            <span class="w-3 h-3 rounded-sm mt-0.5 shrink-0" style="background:#38bdf8"></span>
+            <div>
+              <div class="font-medium">2&times; 15.75" (2040) Z-Uprights</div>
+              <div class="text-[var(--muted-foreground)]">&#8594; Twin Y-Axis Bed Rails (11.0" travel, zero bed rock)</div>
+            </div>
+          </div>
+          <div class="flex items-start gap-2">
+            <span class="w-3 h-3 rounded-sm mt-0.5 shrink-0" style="background:#a78bfa"></span>
+            <div>
+              <div class="font-medium">2&times; 11.42" (2040) Base Legs</div>
+              <div class="text-[var(--muted-foreground)]">&#8594; Vertical Gantry Columns (Factory-square ends)</div>
+            </div>
+          </div>
+          <div class="flex items-start gap-2">
+            <span class="w-3 h-3 rounded-sm mt-0.5 shrink-0" style="background:#facc15"></span>
+            <div>
+              <div class="font-medium">1&times; 13.00" (2020) X-Beam</div>
+              <div class="text-[var(--muted-foreground)]">&#8594; Full-Span X-Bridge (10.5" travel)</div>
+            </div>
+          </div>
+          <div class="flex items-start gap-2">
+            <span class="w-3 h-3 rounded-sm mt-0.5 shrink-0" style="background:#94a3b8"></span>
+            <div>
+              <div class="font-medium">11.42" (4040) + 9.84" (2020)</div>
+              <div class="text-[var(--muted-foreground)]">&#8594; Front &amp; Rear Base Cross-Ties</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="p-2.5 rounded-lg border border-[var(--border)] bg-[var(--content)] space-y-2">
+          <div class="font-semibold text-[var(--foreground)] border-b border-[var(--border)] pb-1">
+            PLA+ &amp; Concrete Armor
+          </div>
+          <div class="flex items-start gap-2">
+            <span class="w-3 h-3 rounded-sm mt-0.5 shrink-0" style="background:#f97316"></span>
+            <div>
+              <div class="font-medium">5-Wall PLA+ Concrete Sleeves</div>
+              <div class="text-[var(--muted-foreground)]">5.8 lbs 1/4"-screened concrete in columns &amp; X-girder</div>
+            </div>
+          </div>
+          <div class="flex items-start gap-2">
+            <span class="w-3 h-3 rounded-sm mt-0.5 shrink-0" style="background:#10b981"></span>
+            <div>
+              <div class="font-medium">Air-Cooled Router Collar</div>
+              <div class="text-[var(--muted-foreground)]">Harbor Freight 62659 (2.56" bore + 8 cooling flutes)</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const canvas = document.getElementById('cadCanvas');
+    const ctx = canvas.getContext('2d');
+    let rotX = -0.42, rotY = 0.62, zoom = 1.05;
+    let dragging = false, lastX = 0, lastY = 0;
+    let morph = 1.0; // 0 = Stock Ender 3, 1 = Zero-Cut CNC
+    let deckMode = 'high'; // 'high' = 3.5", 'low' = 2.0"
+    let xray = true;
+    let jog = 0.0;
+
+    function lerp(a, b, t) { return a + (b - a) * t; }
+
+    // Project 3D point (in mm) to 2D canvas
+    function project(x, y, z) {
+      // Center around Z=140
+      const cz = z - 125;
+      // Rotate around Z (yaw = rotY) then X (pitch = rotX)
+      const cosY = Math.cos(rotY), sinY = Math.sin(rotY);
+      const x1 = x * cosY - y * sinY;
+      const y1 = x * sinY + y * cosY;
+      const cosX = Math.cos(rotX), sinX = Math.sin(rotX);
+      const y2 = y1 * cosX - cz * sinX;
+      const z2 = y1 * sinX + cz * cosX;
+      const scale = (560 * zoom) / (680 + y2 * 0.45);
+      return {
+        x: canvas.width * 0.5 + x1 * scale,
+        y: canvas.height * 0.54 - z2 * scale,
+        depth: y2
+      };
+    }
+
+    // Draw a 3D box centered at (cx,cy,cz) with dimensions (dx,dy,dz)
+    function collectBoxFaces(cx, cy, cz, dx, dy, dz, color, alpha, label) {
+      const hx = dx / 2, hy = dy / 2, hz = dz / 2;
+      const v = [
+        [cx - hx, cy - hy, cz - hz], [cx + hx, cy - hy, cz - hz],
+        [cx + hx, cy + hy, cz - hz], [cx - hx, cy + hy, cz - hz],
+        [cx - hx, cy - hy, cz + hz], [cx + hx, cy - hy, cz + hz],
+        [cx + hx, cy + hy, cz + hz], [cx - hx, cy + hy, cz + hz]
+      ].map(p => project(p[0], p[1], p[2]));
+
+      const faces = [
+        { idx: [0,1,2,3], shade: 0.70 }, // bottom
+        { idx: [4,5,6,7], shade: 1.08 }, // top
+        { idx: [0,1,5,4], shade: 0.92 }, // front
+        { idx: [2,3,7,6], shade: 0.78 }, // back
+        { idx: [1,2,6,5], shade: 0.86 }, // right
+        { idx: [3,0,4,7], shade: 0.82 }  // left
+      ];
+
+      return faces.map((f, fi) => {
+        const pts = f.idx.map(i => v[i]);
+        const avgDepth = pts.reduce((s, p) => s + p.depth, 0) / 4;
+        return { pts, avgDepth, color, shade: f.shade, alpha, label: fi === 1 ? label : null };
+      });
+    }
+
+    function shadeHex(hex, factor) {
+      const n = parseInt(hex.slice(1), 16);
+      const r = Math.min(255, Math.round(((n >> 16) & 255) * factor));
+      const g = Math.min(255, Math.round(((n >> 8) & 255) * factor));
+      const b = Math.min(255, Math.round((n & 255) * factor));
+      return `rgb(${r},${g},${b})`;
+    }
+
+    function render() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // Subtle reference grid
+      ctx.strokeStyle = 'rgba(148, 163, 184, 0.16)';
+      ctx.lineWidth = 1;
+      for (let g = -200; g <= 200; g += 50) {
+        const p1 = project(g, -200, 0), p2 = project(g, 200, 0);
+        ctx.beginPath(); ctx.moveTo(p1.x, p1.y); ctx.lineTo(p2.x, p2.y); ctx.stroke();
+        const p3 = project(-200, g, 0), p4 = project(200, g, 0);
+        ctx.beginPath(); ctx.moveTo(p3.x, p3.y); ctx.lineTo(p4.x, p4.y); ctx.stroke();
+      }
+
+      let allFaces = [];
+      const zBridgeTarget = deckMode === 'high' ? 165 : 127; // 3.5" vs 2.0" Z clearance
+
+      // 1. TWO 15.75" (400mm) 2040 BEAMS (Sky Blue #38bdf8)
+      // Stock: Vertical Z uprights at X=+-125, Z=220 | CNC: Horizontal Twin Y-Rails at X=+-135, Z=20
+      [-1, 1].forEach(side => {
+        const cx = lerp(side * 125, side * 135, morph);
+        const cy = lerp(0, 0, morph);
+        const cz = lerp(220, 20, morph);
+        const dx = 20;
+        const dy = lerp(40, 400, morph);
+        const dz = lerp(400, 40, morph);
+        allFaces.push(...collectBoxFaces(cx, cy, cz, dx, dy, dz, '#38bdf8', 1.0, '15.75" (2040)'));
+      });
+
+      // 2. TWO 11.42" (290mm) 2040 BEAMS (Violet #a78bfa)
+      // Stock: Base side legs at X=+-125, Z=20 | CNC: Vertical Gantry Columns at X=+-155, Z=185
+      [-1, 1].forEach(side => {
+        const cx = lerp(side * 125, side * 155, morph);
+        const cy = lerp(0, -10, morph);
+        const cz = lerp(20, 185, morph);
+        const dx = 20;
+        const dy = lerp(290, 40, morph);
+        const dz = lerp(40, 290, morph);
+        allFaces.push(...collectBoxFaces(cx, cy, cz, dx, dy, dz, '#a78bfa', 1.0, '11.42" (2040)'));
+      });
+
+      // 3. 11.42" (4040) CENTER/FRONT BEAM & 9.84" (2020) REAR TIE (Slate #94a3b8)
+      allFaces.push(...collectBoxFaces(
+        0, lerp(0, -180, morph), 20,
+        lerp(40, 290, morph), lerp(290, 40, morph), 40,
+        '#94a3b8', 1.0, '11.42" (4040)'
+      ));
+      allFaces.push(...collectBoxFaces(
+        0, lerp(0, 180, morph), lerp(430, 20, morph),
+        250, 20, 20,
+        '#94a3b8', 1.0, '9.84" (2020)'
+      ));
+
+      // 4. UNCUT 13.00" (330mm) 2020 X-BEAM (Yellow #facc15)
+      const zBridge = lerp(260, zBridgeTarget, morph);
+      allFaces.push(...collectBoxFaces(
+        0, -30, zBridge,
+        330, 20, 20,
+        '#facc15', 1.0, '13.00" X-Beam (Uncut)'
+      ));
+
+      // 5. MOVING WORK TABLE / SPOILBOARD (10.5" x 11.0" Envelope)
+      const bedY = jog * 1.1;
+      allFaces.push(...collectBoxFaces(
+        0, bedY, 48,
+        267, 279, 10,
+        '#475569', 0.92, '10.5"x11.0" Work Envelope'
+      ));
+
+      // 6. PLA+ CONCRETE BALLAST SLEEVES & X-BRIDGE GIRDER (Orange #f97316)
+      if (morph > 0.15) {
+        const cAlpha = (xray ? 0.52 : 0.95) * morph;
+        // Left & Right Column Concrete Towers
+        [-155, 155].forEach(xCol => {
+          allFaces.push(...collectBoxFaces(xCol, -10, 185, 64, 84, 280, '#f97316', cAlpha, 'Concrete Tower'));
+          if (xray) {
+            // Internal dark grey concrete core visualization
+            allFaces.push(...collectBoxFaces(xCol, -10, 185, 54, 74, 268, '#57534e', 0.65 * morph, null));
+          }
+        });
+        // Concrete X-Bridge Torsion Girder behind 13.00" X-beam
+        allFaces.push(...collectBoxFaces(0, 8, zBridge + 6, 326, 56, 62, '#f97316', cAlpha, 'Concrete X-Girder'));
+        if (xray) {
+          allFaces.push(...collectBoxFaces(0, 8, zBridge + 6, 316, 46, 52, '#57534e', 0.65 * morph, null));
+        }
+      }
+
+      // 7. HARBOR FREIGHT DRILL MASTER 62659 ROUTER + AIR-COOLED COLLAR
+      const headX = jog * 1.1;
+      allFaces.push(...collectBoxFaces(
+        headX, -68, zBridge,
+        88, 68, 50,
+        '#10b981', 1.0, 'Air-Cooled Collar'
+      ));
+      // Red Router Motor Barrel (2.56" / 65mm OD)
+      allFaces.push(...collectBoxFaces(
+        headX, -68, zBridge + 42,
+        65, 65, 135,
+        '#ef4444', 1.0, 'HF 62659 Router'
+      ));
+      // Collet + 1/4" Endmill
+      allFaces.push(...collectBoxFaces(
+        headX, -68, zBridge - 42,
+        14, 14, 36,
+        '#e2e8f0', 1.0, null
+      ));
+
+      // Painter's algorithm sort back-to-front
+      allFaces.sort((a, b) => b.avgDepth - a.avgDepth);
+
+      for (const f of allFaces) {
+        ctx.save();
+        ctx.globalAlpha = f.alpha;
+        ctx.fillStyle = shadeHex(f.color, f.shade);
+        ctx.strokeStyle = 'rgba(15, 23, 42, 0.45)';
+        ctx.lineWidth = 0.8;
+        ctx.beginPath();
+        ctx.moveTo(f.pts[0].x, f.pts[0].y);
+        for (let i = 1; i < f.pts.length; i++) ctx.lineTo(f.pts[i].x, f.pts[i].y);
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
+        ctx.restore();
+      }
+    }
+
+    canvas.addEventListener('mousedown', e => { dragging = true; lastX = e.clientX; lastY = e.clientY; });
+    window.addEventListener('mouseup', () => dragging = false);
+    window.addEventListener('mousemove', e => {
+      if (!dragging) return;
+      rotY += (e.clientX - lastX) * 0.009;
+      rotX = Math.max(-1.35, Math.min(0.2, rotX + (e.clientY - lastY) * 0.009));
+      lastX = e.clientX; lastY = e.clientY;
+      render();
+    });
+    canvas.addEventListener('wheel', e => {
+      e.preventDefault();
+      zoom = Math.max(0.65, Math.min(1.85, zoom - e.deltaY * 0.001));
+      render();
+    }, { passive: false });
+
+    document.getElementById('morphSlider').addEventListener('input', e => {
+      morph = parseFloat(e.target.value) / 100;
+      render();
+    });
+    document.getElementById('jogSlider').addEventListener('input', e => {
+      jog = parseFloat(e.target.value);
+      const xIn = (jog / 100 * 5.25).toFixed(1);
+      const yIn = (jog / 100 * 5.50).toFixed(1);
+      document.getElementById('jogLabel').textContent = `X: ${xIn}" | Y: ${yIn}"`;
+      render();
+    });
+    document.getElementById('btnDeckHigh').addEventListener('click', () => {
+      deckMode = 'high';
+      document.getElementById('statusReadout').textContent =
+        'Mode: High-Deck (3.5" Z Clearance for Wood/2x4s) | Envelope: 10.5" X × 11.0" Y × 3.5" Z';
+      render();
+    });
+    document.getElementById('btnDeckLow').addEventListener('click', () => {
+      deckMode = 'low';
+      document.getElementById('statusReadout').textContent =
+        'Mode: Low-Deck (2.0" Z Clearance for 1/4" Aluminum & Brass) | Envelope: 10.5" X × 11.0" Y × 2.0" Z';
+      render();
+    });
+    document.getElementById('btnXray').addEventListener('click', e => {
+      xray = !xray;
+      e.target.textContent = `Concrete Cutaway: ${xray ? 'ON' : 'OFF'}`;
+      render();
+    });
+
+    render();
+  </script>
+</body>
+</html>
