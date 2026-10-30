@@ -22,12 +22,12 @@ Decomposing Creality's official [`01 MAIN ASM Ender_3.STEP`](https://github.com/
 
 | Factory Solid ID (`01 MAIN ASM Ender_3.STEP`) | Uncut Extrusion Size | Original Ender 3 Role | **New Zero-Cut CNC Role** |
 | :--- | :--- | :--- | :--- |
-| **`Solid[4]` & `Solid[5]`** | $15.75\text{"}$ ($400\text{ mm}$) $\times 2040$ (Qty 2) | Left & Right Z-Uprights | **Twin Y-Axis Bed Rails** ($11.0\text{"}$ travel; eliminates single-rail bed seesawing) |
-| **`Solid[0]` & `Solid[1]`** | $11.42\text{"}$ ($290\text{ mm}$) $\times 4040$ (Qty 2) | Left & Right Heavy Base Legs | **Heavy $4040$ Vertical Gantry Columns** (encased in 5-wall PLA+ concrete towers) |
-| **`Solid[421]`** | $13.00\text{"}$ ($330\text{ mm}$) $\times 2040$ (Qty 1) | Y-Axis Center Spine | **Heavy $2040$ Primary X-Bridge Crossbar Way** ($6.6\times$ stiffer vertically than a $2020$, $40\text{ mm}$ V-roller stance) |
-| **`Solid[44]`** | $13.58\text{"}$ ($345\text{ mm}$) $\times 2020$ (Qty 1) | X-Axis Carriage Rail | **Upper Rear X-Bridge Torsion Rebar** (cast into the concrete X-girder) |
-| **`Solid[2]`** | $9.84\text{"}$ ($250\text{ mm}$) $\times 4040$ (Qty 1) | Center H-Frame Crossbar | **Front Heavy $4040$ Base Cross-Tie** |
-| **`Solid[3]`** | $13.00\text{"}$ ($330\text{ mm}$) $\times 2020$ (Qty 1) | Top Frame Crossbar | **Rear $2020$ Base Cross-Tie** (base ways already supported along 90% of span by concrete sills) |
+| **`Solid[4]` & `Solid[5]`** | $15.75\text{"}$ ($400\text{ mm}$) $\times 2040$ (Qty 2) | Left & Right Z-Uprights | **Twin Y-Axis Bed Rails** ($11.0\text{"}$ travel; centered at `X = ±92 mm` inside the `250 mm` column throat) |
+| **`Solid[0]` & `Solid[1]`** | $11.42\text{"}$ ($290\text{ mm}$) $\times 4040$ (Qty 2) | Left & Right Heavy Base Legs | **Heavy $4040$ Vertical Gantry Columns** (at exact stock Ender 3 coordinates `X = ±145 mm`, `330.0 mm` outer width) |
+| **`Solid[421]`** | $13.00\text{"}$ ($330\text{ mm}$) $\times 2040$ (Qty 1) | Y-Axis Center Spine | **Heavy $2040$ Primary X-Bridge Crossbar Way** (spans edge-to-edge `X = -165..+165 mm` across the front of both columns) |
+| **`Solid[2]`** | $9.84\text{"}$ ($250\text{ mm}$) $\times 4040$ (Qty 1) | Center H-Frame Crossbar | **Heavy $4040$ X-Bridge Core Beam** (bolts directly between the inner faces of the two `4040` columns at `X = -125..+125 mm` using the factory M5 holes!) |
+| **`Solid[44]`** | $13.58\text{"}$ ($345\text{ mm}$) $\times 2020$ (Qty 1) | X-Axis Carriage Rail | **Front $2020$ Base Cross-Tie** (`X = -172.5..+172.5 mm`) |
+| **`Solid[3]`** | $13.00\text{"}$ ($330\text{ mm}$) $\times 2020$ (Qty 1) | Top Frame Crossbar | **Rear $2020$ Base Cross-Tie** (`X = -165.0..+165.0 mm`) |
 | **`Z threaded rod.step`** | $14.37\text{"}$ ($365\text{ mm}$) T8$\times$8 | Z-Axis Leadscrew | **Enclosed Z-Axis Leadscrew** (coaxial inside the dual-`608ZZ` Z-Arch Tower) |
 
 ---

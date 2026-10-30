@@ -232,9 +232,10 @@ CLR_CONCRETE  = (0.50, 0.53, 0.55)  # Internal Screened Concrete Core
 CLR_MDF       = (0.74, 0.58, 0.36)  # T-Slot MDF Spoilboard
 
 # ---------------------------------------------------------------------------
-# 1. GROUND-LEVEL MACHINE BASE & 8 UNCUT EXTRUSIONS (COLUMNS TOUCH GROUND AT Z = 0.0 mm)
+# 1. STOCK ENDER 3 X-WIDTH (330.0 mm FRAME / 250.0 mm INNER GAP) & 8 UNCUT EXTRUSIONS (Z = 0.0 mm)
 # ---------------------------------------------------------------------------
-for sol_id, side, x_pos in [(4, "Left", -115.0), (5, "Right", 115.0)]:
+# Twin 2040 x 400 mm Y-Ways placed at X = +/-92.0 mm so they sit cleanly inside the stock 330 mm Ender 3 frame width
+for sol_id, side, x_pos in [(4, "Left", -92.0), (5, "Right", 92.0)]:
     s_rail = normalize_shape_to_origin(solids[sol_id])
     s_rail.translate(Base.Vector(x_pos, 0.0, 20.0))
     obj = doc.addObject("Part::Feature", f"Donor_Solid{{sol_id}}_2040_TwinY_{{side}}_15_75in")
@@ -242,22 +243,25 @@ for sol_id, side, x_pos in [(4, "Left", -115.0), (5, "Right", 115.0)]:
     set_visual(obj, CLR_EXTRUSION)
     donor_grp.addObject(obj)
 
-s_front = normalize_shape_to_origin(solids[2])
+# Front Base Cross-Tie uses the 2020 x 345 mm (`Solid[44]`, X = -172.5..+172.5 mm) extrusion
+s_front = normalize_shape_to_origin(solids[44])
 s_front.translate(Base.Vector(0.0, -180.0, 0.0))
-obj_f = doc.addObject("Part::Feature", "Donor_Solid2_4040_FrontBaseTie_9_84in")
+obj_f = doc.addObject("Part::Feature", "Donor_Solid44_2020_FrontBaseTie_13_58in")
 obj_f.Shape = s_front
 set_visual(obj_f, CLR_EXTRUSION)
 donor_grp.addObject(obj_f)
 
-# Rear Base Cross-Tie uses the 2020 x 330 mm (`Solid[3]`) extrusion so the heavy 2040 x 330 mm (`Solid[421]`) can serve as the Primary X-Bridge Crossbar!
+# Rear Base Cross-Tie uses the 2020 x 330 mm (`Solid[3]`, X = -165.0..+165.0 mm) extrusion
 s_rear = normalize_shape_to_origin(solids[3])
-s_rear.translate(Base.Vector(0.0, 190.0, 20.0))
+s_rear.translate(Base.Vector(0.0, 190.0, 0.0))
 obj_r = doc.addObject("Part::Feature", "Donor_Solid3_2020_RearBaseTie_13_00in")
 obj_r.Shape = s_rear
 set_visual(obj_r, CLR_EXTRUSION)
 donor_grp.addObject(obj_r)
 
-for sol_id, side, x_col in [(1, "Left", -165.0), (0, "Right", 165.0)]:
+# Left & Right 4040 x 290 mm Gantry Columns at EXACT stock Ender 3 X-coordinates:
+# Left = X:[-165.0, -125.0] (center -145.0), Right = X:[+125.0, +165.0] (center +145.0) -> 330.0 mm outer width, 250.0 mm inner gap!
+for sol_id, side, x_col in [(1, "Left", -145.0), (0, "Right", 145.0)]:
     s_col = normalize_shape_to_origin(solids[sol_id])
     s_col.translate(Base.Vector(x_col, -10.0, 0.0))
     obj_c = doc.addObject("Part::Feature", f"Donor_Solid{{sol_id}}_4040_GantryCol_{{side}}_11_42in")
@@ -266,7 +270,7 @@ for sol_id, side, x_col in [(1, "Left", -165.0), (0, "Right", 165.0)]:
     donor_grp.addObject(obj_c)
 
 z_high_deck = 160.0
-# Heavy 2040 x 330 mm (`Solid[421]`, 40 mm tall x 20 mm deep) swapped into the Primary Lower X-Bridge Crossbar Way!
+# Heavy 2040 x 330 mm (`Solid[421]`, X = -165.0..+165.0 mm, 40 mm tall x 20 mm deep) bolts flush across the front of both 4040 columns!
 s_xmain = normalize_shape_to_origin(solids[421])
 s_xmain.rotate(Base.Vector(0, 0, 0), Base.Vector(0, 1, 0), 90)
 s_xmain.rotate(Base.Vector(0, 0, 0), Base.Vector(1, 0, 0), 90)
@@ -277,10 +281,10 @@ obj_xm.Shape = s_xmain
 set_visual(obj_xm, CLR_EXTRUSION)
 donor_grp.addObject(obj_xm)
 
-# 2020 x 345 mm (`Solid[44]`) serves as the Upper Rear X-Bridge Torsion Rebar inside the concrete box-beam
-s_xback = normalize_shape_to_origin(solids[44])
-s_xback.translate(Base.Vector(0.0, -8.0, z_high_deck + 76.0))
-obj_xb = doc.addObject("Part::Feature", "Donor_Solid44_2020_XBridgeTorsion_13_58in")
+# Heavy 4040 x 250 mm (`Solid[2]`, X = -125.0..+125.0 mm) bolts directly between the inner faces of the two 4040 columns using the factory M5 holes!
+s_xback = normalize_shape_to_origin(solids[2])
+s_xback.translate(Base.Vector(0.0, -10.0, z_high_deck - 10.0))
+obj_xb = doc.addObject("Part::Feature", "Donor_Solid2_4040_XBridgeCore_9_84in")
 obj_xb.Shape = s_xback
 set_visual(obj_xb, CLR_EXTRUSION)
 donor_grp.addObject(obj_xb)
@@ -291,9 +295,9 @@ donor_grp.addObject(obj_xb)
 wall = 2.25
 
 def make_concrete_base_sill_half():
-    len_y, w_x, h_z = 180.0, 56.0, 38.0
+    len_y, w_x, h_z = 180.0, 50.0, 38.0
     outer = make_chamfered_rect_prism(w_x, len_y, h_z, 6.0, 0.0)
-    foot = make_chamfered_rect_prism(w_x + 14.0, len_y, 8.0, 6.0, 0.0)
+    foot = make_chamfered_rect_prism(w_x + 8.0, len_y, 8.0, 6.0, 0.0)
     outer = outer.fuse(foot)
     rail_cut = Part.makeBox(40.4, len_y + 4.0, 22.0, Base.Vector(-20.2, -len_y/2.0 - 2.0, 20.0))
     void = Part.makeBox(w_x - 2*wall, len_y - 2*wall, 20.0 - 2*wall,
@@ -303,7 +307,7 @@ def make_concrete_base_sill_half():
     return sill, void
 
 base_sill_half, base_sill_core = make_concrete_base_sill_half()
-for side, x_sill in [("Left", -115.0), ("Right", 115.0)]:
+for side, x_sill in [("Left", -92.0), ("Right", 92.0)]:
     for fb, y_sill in [("Front", -90.0), ("Rear", 90.0)]:
         s_inst = base_sill_half.copy()
         s_inst.translate(Base.Vector(x_sill, y_sill, 0.0))
@@ -320,53 +324,56 @@ for side, x_sill in [("Left", -115.0), ("Right", 115.0)]:
         conc_grp.addObject(o_sc)
 
 # ---------------------------------------------------------------------------
-# 3. DISTRIBUTED CONCRETE BALLAST ZONE B: GROUND-CONTACTING TAPERED MILL COLUMNS (Z = 0..290 mm)
+# 3. DISTRIBUTED CONCRETE BALLAST ZONE B: STOCK-WIDTH GROUND-CONTACTING MILL COLUMNS (Z = 0..290 mm)
 # ---------------------------------------------------------------------------
 def make_conventional_mill_column(h=145.0, is_lower=True):
+    # Flush front face at local Y = -22.25 mm (global Y = -32.25 mm) so the entire 330 mm 2040 X-Crossbar (Y = -50..-30 mm) is 100% clear in front!
     if is_lower:
-        wx0, wy0 = 82.0, 118.0
-        wx1, wy1 = 76.0, 96.0
-        y_shift  = 6.0
+        wx0, wy0 = 48.0, 124.0
+        wx1, wy1 = 48.0, 108.0
+        y_shift  = 39.5
     else:
-        wx0, wy0 = 76.0, 96.0
-        wx1, wy1 = 70.0, 76.0
-        y_shift  = 6.0
+        wx0, wy0 = 48.0, 108.0
+        wx1, wy1 = 46.0, 92.0
+        y_shift  = 31.5
 
-    outer = make_tapered_column_outer(wx0, wy0, wx1, wy1, y_shift, h, 10.0, 8.0)
+    outer = make_tapered_column_outer(wx0, wy0, wx1, wy1, y_shift, h, 6.0, 5.0)
 
     if is_lower:
-        pedestal = make_chamfered_rect_prism(104.0, 136.0, 12.0, 12.0, 0.0)
-        step_pad = make_chamfered_rect_prism(90.0, 124.0, 22.0, 10.0, 0.0)
+        pedestal = make_chamfered_rect_prism(56.0, 136.0, 12.0, 8.0, 0.0)
+        pedestal.translate(Base.Vector(0.0, y_shift, 0.0))
+        step_pad = make_chamfered_rect_prism(52.0, 128.0, 22.0, 6.0, 0.0)
+        step_pad.translate(Base.Vector(0.0, y_shift, 0.0))
         outer = outer.fuse(pedestal).fuse(step_pad)
-        for bx in [-40.0, 40.0]:
-            for by in [-54.0, 0.0, 54.0]:
+        for bx in [-18.0, 18.0]:
+            for by in [-52.0 + y_shift, y_shift, 52.0 + y_shift]:
                 outer = outer.cut(Part.makeCylinder(2.75, 26.0, Base.Vector(bx, by, -1.0)))
                 outer = outer.cut(Part.makeCylinder(5.2, 12.0, Base.Vector(bx, by, 12.0)))
 
-    crown = make_chamfered_rect_prism(wx1 + 6.0, wy1 + 6.0, 8.0, 8.0, h - 8.0)
+    crown = make_chamfered_rect_prism(wx1 + 4.0, wy1 + 4.0, 8.0, 5.0, h - 8.0)
     crown.translate(Base.Vector(0.0, y_shift, 0.0))
     outer = outer.fuse(crown)
 
     z_p = 28.0
     while z_p + 34.0 < h - 14.0:
-        p_cut = Part.makeBox(wx0 + 10.0, 36.0, 26.0, Base.Vector(-(wx0 + 10.0)/2.0, -14.0, z_p))
-        p_keep = Part.makeBox(wx1 - 5.0, 40.0, 30.0, Base.Vector(-(wx1 - 5.0)/2.0, -16.0, z_p - 2.0))
+        p_cut = Part.makeBox(wx0 + 10.0, 36.0, 26.0, Base.Vector(-(wx0 + 10.0)/2.0, y_shift - 18.0, z_p))
+        p_keep = Part.makeBox(wx1 - 4.0, 40.0, 30.0, Base.Vector(-(wx1 - 4.0)/2.0, y_shift - 20.0, z_p - 2.0))
         outer = outer.cut(p_cut.cut(p_keep))
         z_p += 38.0
 
     void = make_tapered_column_outer(
-        wx0 - 2*wall - 4.0, wy0 - 2*wall - 4.0,
-        wx1 - 2*wall - 4.0, wy1 - 2*wall - 4.0,
-        y_shift, h - 2*wall, 8.0, 6.0
+        wx0 - 2*wall - 2.0, wy0 - 2*wall - 4.0,
+        wx1 - 2*wall - 2.0, wy1 - 2*wall - 4.0,
+        y_shift, h - 2*wall, 5.0, 4.0
     )
     void.translate(Base.Vector(0.0, 0.0, wall))
 
     chimney_w = Part.makeBox(40.6 + 2*wall, 40.6 + 2*wall, h, Base.Vector(-20.3 - wall, -20.3 - wall, 0.0))
     chimney_v = Part.makeBox(40.6, 40.6, h + 4.0, Base.Vector(-20.3, -20.3, -2.0))
 
-    funnel_rim = Part.makeCylinder(15.0, 5.0, Base.Vector(0.0, 26.0 + y_shift, h))
-    pour_port  = Part.makeCylinder(12.7, 16.0, Base.Vector(0.0, 26.0 + y_shift, h - 8.0))
-    bleed_port = Part.makeCylinder(2.5, 16.0, Base.Vector(0.0, -24.0 + y_shift, h - 8.0))
+    funnel_rim = Part.makeCylinder(15.0, 5.0, Base.Vector(0.0, y_shift + 18.0, h))
+    pour_port  = Part.makeCylinder(12.7, 16.0, Base.Vector(0.0, y_shift + 18.0, h - 8.0))
+    bleed_port = Part.makeCylinder(2.5, 16.0, Base.Vector(0.0, y_shift - 8.0, h - 8.0))
 
     col_shell = outer.fuse(funnel_rim).cut(void).fuse(chimney_w).cut(chimney_v).cut(pour_port).cut(bleed_port)
 
@@ -381,7 +388,7 @@ def make_conventional_mill_column(h=145.0, is_lower=True):
 col_sleeve_half, _ = make_conventional_mill_column(145.0, is_lower=True)
 col_full_shell, col_full_core = make_conventional_mill_column(290.0, is_lower=True)
 
-for side, x_col in [("Left", -165.0), ("Right", 165.0)]:
+for side, x_col in [("Left", -145.0), ("Right", 145.0)]:
     slv = col_full_shell.copy()
     slv.translate(Base.Vector(x_col, -10.0, 0.0))
     o_slv = doc.addObject("Part::Feature", f"PLA_5Wall_Concrete_TowerSleeve_{{side}}")
@@ -397,7 +404,7 @@ for side, x_col in [("Left", -165.0), ("Right", 165.0)]:
     conc_grp.addObject(o_core)
 
 # ---------------------------------------------------------------------------
-# 4. DISTRIBUTED CONCRETE BALLAST ZONE C: THICK DEEP-SECTION PORTAL BOX-BEAM X-CROSSBAR
+# 4. DISTRIBUTED CONCRETE BALLAST ZONE C: STOCK-WIDTH PORTAL BOX-BEAM X-CROSSBAR (X = -169..+169 mm)
 # ---------------------------------------------------------------------------
 def make_mill_x_crossrail_half():
     half_len, gd_y, gh_z = 165.0, 78.0, 112.0
@@ -430,21 +437,21 @@ def make_mill_x_crossrail_half():
 
 x_girder_half = make_mill_x_crossrail_half()
 
-# Placed at Y = -32..+46 mm (centered at Y = +7.0 mm) so the front of `Solid[44]` (Y = -50..-30 mm) is 100% clear for the X-carriage!
-xg_body = make_chamfered_rect_prism(330.0, 78.0, 112.0, 10.0, z_high_deck - 4.0)
-xg_body.translate(Base.Vector(0.0, 7.0, 0.0))
-for sx in [-165.0, 165.0]:
-    cheek = make_chamfered_rect_prism(84.0, 98.0, 124.0, 10.0, z_high_deck - 8.0)
-    cheek_in = make_chamfered_rect_prism(75.6, 89.6, 128.0, 9.0, z_high_deck - 10.0)
+# Concrete X-Crossbar sits at Y = -30..+54 mm (behind the 2040 front way at Y = -50..-30 mm) and spans X = -169..+169 mm!
+xg_body = make_chamfered_rect_prism(250.0, 84.0, 112.0, 8.0, z_high_deck - 4.0)
+xg_body.translate(Base.Vector(0.0, 12.0, 0.0))
+for sx in [-145.0, 145.0]:
+    cheek = make_chamfered_rect_prism(50.0, 108.0, 124.0, 6.0, z_high_deck - 8.0)
+    cheek_in = make_chamfered_rect_prism(44.0, 100.0, 128.0, 5.0, z_high_deck - 10.0)
     cheek = cheek.cut(cheek_in)
-    cheek.translate(Base.Vector(sx, -4.0, 0.0))
+    cheek.translate(Base.Vector(sx, 21.0, 0.0))
     xg_body = xg_body.fuse(cheek)
 
-xg_void = make_chamfered_rect_prism(298.0, 66.0, 102.0, 8.0, z_high_deck + 1.0)
-xg_void.translate(Base.Vector(0.0, 7.0, 0.0))
-for px in [-75.0, 75.0]:
-    xg_body = xg_body.fuse(Part.makeCylinder(15.5, 5.0, Base.Vector(px, 7.0, z_high_deck + 108.0)))
-    xg_body = xg_body.cut(Part.makeCylinder(12.7, 16.0, Base.Vector(px, 7.0, z_high_deck + 98.0)))
+xg_void = make_chamfered_rect_prism(242.0, 74.0, 102.0, 6.0, z_high_deck + 1.0)
+xg_void.translate(Base.Vector(0.0, 12.0, 0.0))
+for px in [-65.0, 65.0]:
+    xg_body = xg_body.fuse(Part.makeCylinder(15.5, 5.0, Base.Vector(px, 24.0, z_high_deck + 108.0)))
+    xg_body = xg_body.cut(Part.makeCylinder(12.7, 16.0, Base.Vector(px, 24.0, z_high_deck + 98.0)))
 
 xg_shell = xg_body.cut(xg_void).cut(s_xmain).cut(s_xback)
 o_xg = doc.addObject("Part::Feature", "PLA_5Wall_XBridge_Concrete_Girder")
@@ -469,13 +476,13 @@ set_visual(obj_yp, CLR_STEEL_BLK)
 donor_grp.addObject(obj_yp)
 
 def make_stylized_y_outrigger():
-    base = make_chamfered_rect_prism(96.0, 50.0, 16.0, 8.0, 0.0)
-    skirt = make_chamfered_rect_prism(96.0, 18.0, 24.0, 6.0, -8.0)
+    base = make_chamfered_rect_prism(74.0, 50.0, 16.0, 8.0, 0.0)
+    skirt = make_chamfered_rect_prism(74.0, 18.0, 24.0, 6.0, -8.0)
     skirt.translate(Base.Vector(0.0, 16.0, 0.0))
     plate = base.fuse(skirt)
-    truss_pocket = make_chamfered_rect_prism(42.0, 26.0, 10.0, 5.0, 8.0)
+    truss_pocket = make_chamfered_rect_prism(32.0, 26.0, 10.0, 5.0, 8.0)
     plate = plate.cut(truss_pocket)
-    for x_w in [-32.0, 32.0]:
+    for x_w in [-22.0, 22.0]:
         wheel_hole = Part.makeCylinder(2.6, 30.0, Base.Vector(x_w, 12.0, -10.0))
         cb_w       = Part.makeCylinder(5.0, 4.0, Base.Vector(x_w, 12.0, 12.0))
         y_mount    = Part.makeCylinder(2.6, 22.0, Base.Vector(x_w, -12.0, -2.0))
@@ -484,7 +491,7 @@ def make_stylized_y_outrigger():
     return plate
 
 y_outrigger_shape = make_stylized_y_outrigger()
-for side, x_out in [("Left", -95.0), ("Right", 95.0)]:
+for side, x_out in [("Left", -76.0), ("Right", 76.0)]:
     for tag, y_out in [("Front", y_table_pos - 45.0), ("Rear", y_table_pos + 45.0)]:
         outr = y_outrigger_shape.copy()
         outr.translate(Base.Vector(x_out, y_out, 36.0))
@@ -496,7 +503,7 @@ for side, x_out in [("Left", -95.0), ("Right", 95.0)]:
 # 8x Y-Axis V-Slot Rollers (`Rollers.step`) + Coaxial Stainless Spacers/Eccentric Nuts & M5 Bolts
 roller_shape = load_stp_centered("Rollers.step")
 y_rollers_list, y_spacers_list = [], []
-for x_w in [-103.0, 103.0]:
+for x_w in [-80.0, 80.0]:
     for dy_w in [-77.0, -13.0, 13.0, 77.0]:
         y_w = y_table_pos + dy_w
         r_i = roller_shape.copy()
@@ -532,7 +539,7 @@ o_ypr.Shape = y_pulley_rear
 set_visual(o_ypr, CLR_ALU_PLATE)
 motion_grp.addObject(o_ypr)
 
-# Front Y-Axis Idler Pulley & Compact Tensioner Clevis (mounted to inner face of Front 4040 Tie at X=0, Y=-152mm)
+# Front Y-Axis Idler Pulley & Compact Tensioner Clevis (mounted to inner face of Front Tie at X=0, Y=-152mm)
 y_tens_clevis = make_chamfered_rect_prism(34.0, 24.0, 24.0, 4.0, 18.0)
 y_tens_clevis.translate(Base.Vector(0.0, -156.0, 0.0))
 y_tens_clevis = y_tens_clevis.cut(Part.makeBox(22.0, 22.0, 16.0, Base.Vector(-11.0, -162.0, 22.0)))
@@ -562,9 +569,9 @@ set_visual(o_yclp, CLR_BRASS)
 motion_grp.addObject(o_yclp)
 
 # ---------------------------------------------------------------------------
-# 6. COAXIAL X-AXIS GANTRY SADDLE DRIVETRAIN (ZERO CLUTTER)
+# 6. COAXIAL X-AXIS GANTRY SADDLE DRIVETRAIN (ON FULL-WIDTH 2040 X-CROSSBAR)
 # ---------------------------------------------------------------------------
-# Precision X-Saddle Carriage Plate (`92 x 8 x 96 mm`) riding at Y = -56 mm along the front of `Solid[44]` (Y = -40 mm)
+# Precision X-Saddle Carriage Plate (`92 x 8 x 96 mm`) riding at Y = -56 mm along the front of `Solid[421]` (Y = -40 mm)
 x_saddle = make_chamfered_rect_prism(92.0, 8.0, 96.0, 8.0, z_high_deck - 24.0)
 x_saddle.translate(Base.Vector(0.0, -56.0, 0.0))
 o_xsad = doc.addObject("Part::Feature", "Motion_X_Saddle_Carriage_Plate")
@@ -595,36 +602,36 @@ o_xhw.Shape = Part.makeCompound(x_spacers_list)
 set_visual(o_xhw, CLR_ALU_PLATE)
 motion_grp.addObject(o_xhw)
 
-# Left X-Axis Stepper Motor (mounted neatly inside the left crossrail bay at X=-132mm, shaft pointing -Y to pulley at Y=-50mm)
+# Left X-Axis Stepper Motor & Coaxial 20T GT2 Pulley at X = -104.0 mm (cleanly inside the 250 mm inner column throat)
 x_mot = make_nema17_motor(34.0, "Y-")
-x_mot.translate(Base.Vector(-132.0, -6.0, z_high_deck + 10.0))
+x_mot.translate(Base.Vector(-104.0, -6.0, z_high_deck + 10.0))
 o_xm = doc.addObject("Part::Feature", "Motion_X_Left_NEMA17_Stepper_Motor")
 o_xm.Shape = x_mot
 set_visual(o_xm, CLR_EXTRUSION)
 motion_grp.addObject(o_xm)
 
-x_pulley = make_gt2_pulley_y(-132.0, -56.0, z_high_deck + 10.0, 12.0)
+x_pulley = make_gt2_pulley_y(-104.0, -56.0, z_high_deck + 10.0, 12.0)
 o_xpul = doc.addObject("Part::Feature", "Motion_X_Left_20T_GT2_Drive_Pulley")
 o_xpul.Shape = x_pulley
 set_visual(o_xpul, CLR_ALU_PLATE)
 motion_grp.addObject(o_xpul)
 
-# Right X-Axis GT2 Idler Pulley & Compact Tensioner Clevis at X=+132mm
-x_idler = make_gt2_pulley_y(132.0, -56.0, z_high_deck + 10.0, 12.0)
+# Right X-Axis GT2 Idler Pulley & Compact Tensioner Clevis at X = +104.0 mm
+x_idler = make_gt2_pulley_y(104.0, -56.0, z_high_deck + 10.0, 12.0)
 o_xidl = doc.addObject("Part::Feature", "Motion_X_Right_GT2_Idler_Pulley")
 o_xidl.Shape = x_idler
 set_visual(o_xidl, CLR_ALU_PLATE)
 motion_grp.addObject(o_xidl)
 
 x_tens_clevis = make_chamfered_rect_prism(22.0, 18.0, 22.0, 4.0, z_high_deck - 1.0)
-x_tens_clevis.translate(Base.Vector(138.0, -48.0, 0.0))
+x_tens_clevis.translate(Base.Vector(110.0, -48.0, 0.0))
 o_xadj = doc.addObject("Part::Feature", "Motion_X_Right_Belt_Tensioner_Block")
 o_xadj.Shape = x_tens_clevis
 set_visual(o_xadj, CLR_STEEL_BLK)
 motion_grp.addObject(o_xadj)
 
-# Taut Closed GT2 X-Belt Loop (`X = -132..+132 mm, Y = -50 mm, Z = z_high_deck + 10 mm`)
-x_belt_loop = make_closed_belt_loop_x(-132.0, 132.0, -50.0, z_high_deck + 10.0, r_pulley=6.5, belt_w=6.0, belt_t=1.5)
+# Taut Closed GT2 X-Belt Loop (`X = -104..+104 mm, Y = -50 mm`)
+x_belt_loop = make_closed_belt_loop_x(-104.0, 104.0, -50.0, z_high_deck + 10.0, r_pulley=6.5, belt_w=6.0, belt_t=1.5)
 o_xbelt = doc.addObject("Part::Feature", "Motion_X_GT2_Timing_Belt_Loop")
 o_xbelt.Shape = x_belt_loop
 set_visual(o_xbelt, CLR_BELT)
@@ -989,7 +996,7 @@ view = Gui.ActiveDocument.ActiveView
 view.setAnimationEnabled(False)
 
 for objs, fn in [
-    (["PLA_5Wall_Concrete_TowerSleeve_Left", "PLA_Ground_Concrete_BaseSill_Left_Front", "PLA_TwinRail_Y_Outrigger_Left_Front", "Motion_Y_Front_Belt_Tensioner_Clevis", "Motion_Y_Front_GT2_Idler_Pulley", "Donor_Solid2_4040_FrontBaseTie_9_84in"], "freecad_closeup_exoskeleton_tower.png"),
+    (["PLA_5Wall_Concrete_TowerSleeve_Left", "PLA_Ground_Concrete_BaseSill_Left_Front", "PLA_TwinRail_Y_Outrigger_Left_Front", "Motion_Y_Front_Belt_Tensioner_Clevis", "Motion_Y_Front_GT2_Idler_Pulley", "Donor_Solid44_2020_FrontBaseTie_13_58in"], "freecad_closeup_exoskeleton_tower.png"),
     (["PLA_Z_Stepper_And_608ZZ_Arch_Tower", "Motion_Z_Top_NEMA17_Stepper_Motor", "Motion_Z_5x8mm_Flexible_Shaft_Coupler", "Motion_Z_Top_And_Bottom_608ZZ_Radial_Bearings", "Motion_Z_Brass_T8x8_Leadscrew_Nut", "Motion_X_Left_NEMA17_Stepper_Motor", "Motion_X_Right_GT2_Idler_Pulley", "PLA_5Wall_XBridge_Concrete_Girder"], "freecad_closeup_z_arch_bridge.png"),
     (["PLA_6Wall_AirCooled_DM62659_Collar", "HF62659_01_Machined_Aluminum_Barrel", "HF62659_02_Crimson_Motor_Housing", "HF62659_04_Collet_Nut", "HF62659_05_Carbide_Endmill_1_8in", "Workpiece_6061_Aluminum_Plate", "Workholding_2x_TSlot_Step_Clamps", "Motion_Z_4x_Vertical_Plunge_VSlot_Rollers"], "freecad_closeup_spindle_shroud.png"),
 ]:
@@ -1018,7 +1025,7 @@ doc = App.getDocument("Ender3_Donor_ZeroCut_CNC")
 z_offset = -(1.5 * 25.4)
 for name in [
     "Donor_Solid421_2040_XBridgePrimary_13_00in",
-    "Donor_Solid44_2020_XBridgeTorsion_13_58in",
+    "Donor_Solid2_4040_XBridgeCore_9_84in",
     "Motion_X_Saddle_Carriage_Plate",
     "Motion_X_4x_VSlot_POM_Rollers",
     "Motion_X_4x_Coaxial_Spacers_And_Eccentric_Nuts",
