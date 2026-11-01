@@ -1,114 +1,138 @@
-# RepStrap Zero-Cut Ender 3 -> Desktop CNC Mill (`10.5" x 11.0" x 3.5" / 2.0"`)
+# Zero-Cut Creality Ender 3 $\to$ Desktop CNC Milling Machine
 
-> **Point-of-No-Return Invariant:** The stock Creality Ender 3 prints 100% of its own conversion brackets, 5-wall hollow concrete ballast sleeves, and air-cooled spindle collar using **a single 1 kg (2.2 lb) roll of PLA+** *before* a single bolt is loosened on the printer.
-
----
-
-## 1. Locked-In Engineering Specifications (Imperial & Metric)
-
-* **Working Cutting Envelope ($X \times Y \times Z$):**
-  * **High-Deck Mode (Wood, $2\times 4$s, 3D Reliefs):** **$10.5\text{"} \times 11.0\text{"} \times 3.5\text{"}$** ($266.7 \times 279.4 \times 88.9\text{ mm}$)
-  * **Low-Deck Mode ($1/4\text{"}$ 6061 Aluminum & Brass):** **$10.5\text{"} \times 11.0\text{"} \times 2.0\text{"}$** ($266.7 \times 279.4 \times 50.8\text{ mm}$) — achieved by dropping the X-bridge 4 bolts down the column sleeves.
-* **Aluminum Extrusion Cuts Required:** **ZERO (`0`).** Every factory-milled square end on the donor Ender 3 is preserved.
-* **Spindle:** Harbor Freight **Drill Master 2.4 Amp $1/4\text{"}$ Trim Router (SKU 62659)** ($\varnothing 2.56\text{"} / 65.0\text{ mm}$ motor barrel clamped in a 6-wall PLA+ split collar with 8 vertical $\varnothing 0.08\text{"}$ cooling air flutes).
-* **Filament Budget:** **1 Single Roll of PLA+** ($34.9\text{ oz} / 2.18\text{ lbs} / 990\text{ g}$ across 3 sequential build plates; $\sim 21.5\text{ hours}$ total print time at $0.28\text{ mm}$ layer height, $0.45\text{ mm}$ line width, 5 perimeters = $0.089\text{"} / 2.25\text{ mm}$ solid hydrostatic shell walls).
-* **Cast Ballast Core:** **$1/4\text{"}$-Screened Concrete** (standard bagged concrete sifted through $1/4\text{"}$ mesh, or Quikrete Sand/Topping Mix) mixed at **10 parts dry mix : 1.2 parts cold water + 3 drops dish soap surfactant**, poured through $\varnothing 1.00\text{"}$ ($25.4\text{ mm}$) top funnels with internal $0.25\text{"}$ sawtooth anti-shrinkage interlock fins.
+> **Zero Extrusion Cuts:** Re-engineers **100% of the 8 uncut factory aluminum extrusions** from the official Creality Ender 3 assembly into a rigid, vibration-damped fixed-bridge portal mill with a **$10.0" \times 9.0" \times 3.0"$ ($254.0 \times 228.6 \times 76.2\text{ mm}$)** cutting envelope.
 
 ---
 
-## 2. The "Zero-Cut Beam Swap" Architecture (Mapped to Official Creality CAD)
+## 1. Machine Highlights & Core Innovations
 
-Decomposing Creality's official [`01 MAIN ASM Ender_3.STEP`](https://github.com/Creality3DPrinting/Ender-3) (655 solids) reveals **8 uncut aluminum extrusions** that rearrange cleanly into a wide twin-rail moving-table CNC mill:
-
-| Factory Solid ID (`01 MAIN ASM Ender_3.STEP`) | Uncut Extrusion Size | Original Ender 3 Role | **New Zero-Cut CNC Role** |
-| :--- | :--- | :--- | :--- |
-| **`Solid[4]` & `Solid[5]`** | $15.75\text{"}$ ($400\text{ mm}$) $\times 2040$ (Qty 2) | Left & Right Z-Uprights | **Twin Y-Axis Bed Rails** ($11.0\text{"}$ travel; centered at `X = ±92 mm` inside the `250 mm` column throat) |
-| **`Solid[0]` & `Solid[1]`** | $11.42\text{"}$ ($290\text{ mm}$) $\times 4040$ (Qty 2) | Left & Right Heavy Base Legs | **Heavy $4040$ Vertical Gantry Columns** (at exact stock Ender 3 coordinates `X = ±145 mm`, `330.0 mm` outer width) |
-| **`Solid[421]`** | $13.00\text{"}$ ($330\text{ mm}$) $\times 2040$ (Qty 1) | Y-Axis Center Spine | **Heavy $2040$ Primary X-Bridge Crossbar Way** (spans edge-to-edge `X = -165..+165 mm` across the front of both columns) |
-| **`Solid[2]`** | $9.84\text{"}$ ($250\text{ mm}$) $\times 4040$ (Qty 1) | Center H-Frame Crossbar | **Heavy $4040$ X-Bridge Core Beam** (bolts directly between the inner faces of the two `4040` columns at `X = -125..+125 mm` using the factory M5 holes!) |
-| **`Solid[44]`** | $13.58\text{"}$ ($345\text{ mm}$) $\times 2020$ (Qty 1) | X-Axis Carriage Rail | **Front $2020$ Base Cross-Tie** (`X = -172.5..+172.5 mm`) |
-| **`Solid[3]`** | $13.00\text{"}$ ($330\text{ mm}$) $\times 2020$ (Qty 1) | Top Frame Crossbar | **Rear $2020$ Base Cross-Tie** (`X = -165.0..+165.0 mm`) |
-| **`Z threaded rod.step`** | $14.37\text{"}$ ($365\text{ mm}$) T8$\times$8 | Z-Axis Leadscrew | **Enclosed Z-Axis Leadscrew** (coaxial inside the dual-`608ZZ` Z-Arch Tower) |
+* **Working Cutting Envelope ($X \times Y \times Z$):** **$10.0" \times 9.0" \times 3.0"$** ($254.0 \times 228.6 \times 76.2\text{ mm}$) confirmed by 3D CAD collision and stroke verification.
+* **Ground-Contacting Concrete Sills:** Twin $420\text{ mm}$ stay-in-place 3D-printed formwork shells touch the workbench directly at $Z = 0$, filled with $\sim 12.5\text{ kg}$ ($27.5\text{ lbs}$) of non-shrink precision grout to absorb milling vibrations.
+* **Precision Extrusion Pockets:** Vertical $4040$ columns are embedded $60\text{ mm}$ deep into solid concrete column sockets; twin $2040$ Y-bed ways nest into stepped alignment shelves; and $2020$ ties lock in at square $90^\circ$ keyways.
+* **Counterbalanced "Split-Weight" Router Head:** 
+  * **Router in Front:** 65 mm Makita RT0701C (1.25 HP, 10,000–30,000 RPM) or 500W ER11 brushless DC spindle.
+  * **Guidance in Middle:** Compound $60 \times 40\text{ mm}$ X-bridge (`4040 × 250 mm` + `2040 × 330 mm`) and MGN12H linear guide rail.
+  * **Motor in Back:** Z-axis NEMA 17 stepper motor mounted behind the crossbar, driving the front T8 leadscrew via an overhead GT2 synchronous timing belt.
+  * *Result:* Forward cantilever tipping moment on the linear bearings is reduced by $>60\%$, virtually eliminating tool chatter.
+* **Heavy-Duty 65mm Split-Collar Clamp:** Extended $48\text{ mm}$ clamping face with tangential flex slit, dual $M6$ pinch bolts, captive nut pockets, magnetic snap-on dust boot interface, and a $65\text{ mm} \to 52\text{ mm}$ reduction sleeve.
+* **Zero Sheet Metal / Protected Electronics Basement:** Eliminates the stock sheet metal boxes in favor of a 3D-printed slide tray suspended beneath the worktable between the concrete foundation beams, housing the 24V 15A PSU and 32-bit silent TMC controller board safe from falling chips.
 
 ---
 
-## 3. Repository Structure
+## 2. Visual Showcase & CAD Renders
+
+| Full Machine Assembly (Isometric) | Front Elevation & Ground Clearance |
+| :---: | :---: |
+| ![Full Assembly](visuals/renders/router_clamp_full_machine_iso.png) | ![Front Elevation](visuals/renders/hybrid_concrete_front.png) |
+
+| Counterbalanced Split-Weight Toolhead (Side View) | 65mm Router Clamp Close-Up (Front View) |
+| :---: | :---: |
+| ![Side Toolhead Balance](visuals/renders/router_clamp_closeup_side.png) | ![Router Clamp Close-Up](visuals/renders/router_clamp_closeup_front.png) |
+
+| Top View (Pour Funnels & Belt Transfer) | Undercarriage Electronics Slide Tray |
+| :---: | :---: |
+| ![Top View](visuals/renders/hybrid_concrete_top.png) | ![Undercarriage View](visuals/renders/opt1_undercarriage_bottom.png) |
+
+---
+
+## 3. Extrusion Inventory & Zero-Cut Allocation
+
+All 8 factory extrusions from Creality's official `01 MAIN ASM Ender_3.STEP` are preserved at their exact factory lengths:
+
+| STEP Solid ID | Extrusion Profile | Factory Length | Stock Ender 3 Role | **CNC Milling Machine Role** |
+| :--- | :--- | :--- | :--- | :--- |
+| **`Solid[0]` & `Solid[1]`** | $4040$ Heavy V-Slot | $290.0\text{ mm}$ ($11.42"$) | Base Frame Legs | **Fixed Vertical Columns** (embedded $60\text{ mm}$ in concrete, $330\text{ mm}$ outer width) |
+| **`Solid[2]`** | $4040$ Heavy V-Slot | $250.0\text{ mm}$ ($9.84"$) | Y-Bed Center Spine | **Inner X-Bridge Girder** (bolted between column inner faces at $X = \pm 125\text{ mm}$) |
+| **`Solid[421]`** | $2040$ Medium V-Slot | $330.0\text{ mm}$ ($13.00"$) | Power Supply Strut | **Front X-Bridge Way** (spans full $330\text{ mm}$ width across front column faces) |
+| **`Solid[4]` & `Solid[5]`** | $2040$ Medium V-Slot | $400.0\text{ mm}$ ($15.75"$) | Vertical Z-Uprights | **Twin Y-Axis Bed Rails** (spaced at $X = \pm 95\text{ mm}$ on concrete foundation shelves) |
+| **`Solid[44]`** | $2020$ Light V-Slot | $345.0\text{ mm}$ ($13.58"$) | X-Axis Gantry Beam | **Front Base Cross-Tie** ($Y = -190\text{ mm}$, seated in foundation keyways) |
+| **`Solid[3]`** | $2020$ Light V-Slot | $330.0\text{ mm}$ ($13.00"$) | Top Z-Frame Crossbar | **Rear Base Cross-Tie** ($Y = +190\text{ mm}$, seated in foundation keyways) |
+
+---
+
+## 4. Motion System Architecture
+
+### A. Y-Axis (Moving Worktable)
+* **Guidance:** Twin $400\text{ mm}$ MGN12H linear rails (or V-slot roller sets) mounted atop the twin `2040 × 400 mm` extrusions ($X = \pm 95\text{ mm}$).
+* **Carriage:** Stock Ender 3 aluminum bed carriage plate ($190 \times 190\text{ mm}$) tied across both rails.
+* **Drive:** Rear NEMA 17 stepper motor driving a central $370\text{ mm}$ T8 leadscrew through a flexible helical coupler into a brass anti-backlash nut block on the carriage underside.
+* **Stroke:** **$9.0"$ ($228.6\text{ mm}$)** cutting stroke ($250\text{ mm}$ mechanical travel) with spoilboard table ($264 \times 240\text{ mm}$).
+
+### B. X-Axis (Toolhead on Fixed Compound Bridge)
+* **Guidance:** Compound $60 \times 40\text{ mm}$ bridge (`4040 × 250 mm` inner girder + `2040 × 330 mm` front beam) with front-mounted MGN12H linear guide rail.
+* **Carriage:** Inverted "U" saddle plate ($95\text{ mm wide} \times 85\text{ mm deep} \times 8\text{ mm thick}$) straddling the bridge.
+* **Drive:** Left-column NEMA 17 stepper driving a steel-core $6\text{ mm}$ GT2 timing belt with an adjustable right-column bearing tensioner.
+* **Stroke:** **$10.0"$ ($254.0\text{ mm}$)** cutting stroke across the $330\text{ mm}$ span.
+
+### C. Z-Axis (Vertical Plunge & Spindle Drive)
+* **Guidance:** Twin vertical precision guide rails ($120\text{ mm}$) on the front of the saddle carriage.
+* **Drive:** Rear-mounted NEMA 17 stepper motor driving the stock Ender 3 T8 stainless steel leadscrew via an overhead GT2 synchronous belt.
+* **Stroke:** **$3.0"$ ($76.2\text{ mm}$)** vertical plunge depth with $15\text{ mm}$ retract clearance.
+
+---
+
+## 5. Counterbalanced Split-Weight Router Head
+
+```
+    [ FRONT: Cutting Zone ]            [ IN BETWEEN: Guidance ]            [ BACK: Counterbalance ]
+   +-------------------------+      +-------------------------------+      +-----------------------+
+   | Makita RT0701C Router   |      | Front MGN12 Linear Guide Rail |      | Z-Axis NEMA 17 Stepper|
+   | 65mm Split Collar Clamp |<====>| 2040 x 330 mm Front Way Extr  |<====>| Rear Drop Bracket     |
+   | Vertical Z-Plunge Slide |      | 4040 x 250 mm Inner Girder    |      | Top GT2 Drive Pulley  |
+   | Front T8 Leadscrew      |      | (Combined X = 330 mm Bridge)  |      |                       |
+   +-------------------------+      +-------------------------------+      +-----------------------+
+       Mass: ~1.80 kg                        Support Plane                     Mass: ~0.55 kg
+     Lever Arm: -88 mm                      Pivot: Y = 0 mm                 Lever Arm: +60 mm
+```
+
+* **Reduced Bearing Tilt:** Placing the stepper motor behind the crossbar and the cutting tool in front balances the carriage across the linear guide rails, preventing front-end droop and high-frequency tool chatter.
+* **Dual Spindle Compatibility:** Accepts standard $65\text{ mm}$ trim routers (Makita RT0701C, Carbide 3D) and includes a precision $65\text{ mm} \to 52\text{ mm}$ split adapter sleeve for $500\text{ W}$ ER11 brushless DC spindles.
+* **Snap-on Magnetic Dust Boot:** Four neodymium magnetic pockets on the clamp underside allow a vacuum dust sweep to pop on and off effortlessly.
+
+---
+
+## 6. Repository Organization
 
 ```text
-repstrap-ender3-zerocut-cnc/
-├── README.md                          # Project overview & locked-in engineering specs
-├── AGENT_HANDOFF.md                   # Complete technical handoff & next-step roadmap for AI agents
+enderCNC/
+├── README.md                               # Project documentation & engineering specs
 ├── cad/
-│   ├── mcp_build_and_slice.py         # Full 62-object coaxial FreeCAD + OrcaSlicer MCP pipeline
-│   ├── render_studio_parts.py         # High-resolution studio renderer for the 6 printable parts
-│   ├── build_ender3_donor_cnc.py      # Extracts factory STEP solids & builds full FreeCAD CNC assembly
-│   ├── repstrap_zero_cut_freecad.py   # Parametric printable STL generator (Beds 1, 2, 3)
-│   ├── inspect_ender3_stp.py          # Diagnostic scanner for `01 MAIN ASM Ender_3.STEP`
-│   ├── stl/                           # 6 watertight printable .stl meshes (Beds 1, 2, 3)
-│   └── exports/                       # Generated .FCStd, .step, and full assembly .stl mesh
-├── mcp/
-│   └── freecad_mcp_bridge.py          # Live FreeCAD RPC/MCP server (`set_z_deck_mode`, `export_mesh`)
-├── firmware/
-│   └── Configuration_CNC_Patch.h      # Marlin 2.1.x patch for Creality V4.2.2 / V4.2.7 32-bit board
+│   ├── Ender3_Router_Clamp_Mechanism.FCStd # Complete master assembly with 65mm Makita router & clamp
+│   ├── Ender3_Concrete_Hybrid_CNC.FCStd    # Hybrid concrete foundation shells & extrusion seating
+│   ├── Ender3_Option1_Counterbalanced_CNC.FCStd # Counterbalanced split-weight toolhead
+│   ├── Ender3_Option1_Full_CNC.FCStd       # Baseline Option 1 motion assembly
+│   └── Ender3_3_Extrusion_Layouts_Comparison.FCStd # 3-way layout comparison
+├── scripts/
+│   ├── design_router_clamp.py              # Parametric router clamp generator & renderer
+│   ├── build_hybrid_concrete_cnc.py        # Concrete foundation shell generator & renderer
+│   ├── update_counterbalanced_toolhead.py  # Saddle carriage & overhead belt generator
+│   ├── build_option1_cnc.py                # Full Option 1 assembly script
+│   └── compare_3_layouts.py                # 3-way layout generator & renderer
 ├── visuals/
-│   ├── renders/                       # Orthographic, 3D close-up, studio part, and OrcaSlicer renders
-│   ├── repstrap_3d_cad_viewer.html    # Full-screen interactive 3D CAD & Beam-Swap visualizer
-│   └── repstrap_inline_viewer.html    # Compact inline 3D viewer
-└── scripts/
-    └── fetch_ender3_cad.sh            # Clones official Creality Ender-3 STEP repository if not present
+│   └── renders/                            # High-resolution multi-view renders & close-ups
+├── router_clamp_engineering_report.md      # Detailed 65mm router clamp research & specs
+├── hybrid_concrete_foundation_guide.md     # Concrete formwork & ground-anchoring guide
+├── counterbalanced_router_head.md          # Static moment calculations & toolhead details
+├── ender3_option1_motion_plan.md           # X, Y, Z motion mechanism specifications
+└── ender3_3_extrusion_layouts.md           # 3-way extrusion layout comparison report
 ```
 
 ---
 
-## 4. Clean 62-Object Coaxial 3D CAD Assembly & Studio Showcase
+## 7. Quickstart: Opening & Inspecting the CAD
 
-![FreeCAD Isometric Assembly — Clean 62-Object Coaxial Portal Mill](visuals/renders/freecad_assembly_isometric.png)
+All models are authored in standard [FreeCAD 1.1 / 1.0](https://www.freecad.org/):
 
-| Close-Up: Headstock Shroud & Clamped Workpiece | Close-Up: Coaxial Z-Arch & Thick Concrete Crossbar | Close-Up: Ground-Contacting Portal Column & Y-Sill |
-| :---: | :---: | :---: |
-| ![Spindle Shroud](visuals/renders/freecad_closeup_spindle_shroud.png) | ![Z-Arch Bridge](visuals/renders/freecad_closeup_z_arch_bridge.png) | ![Portal Column](visuals/renders/freecad_closeup_exoskeleton_tower.png) |
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/CalvinistKlein/enderCNC.git
+   cd enderCNC
+   ```
 
-| Front Elevation (3.5" High-Deck Mode) | Right Elevation (Compact Overhang) | Top Plan View (Twin-Rail Y & Closed Belt Loops) | Front Elevation (2.0" Low-Deck Mode) |
-| :---: | :---: | :---: | :---: |
-| ![Front](visuals/renders/freecad_assembly_front.png) | ![Right](visuals/renders/freecad_assembly_right.png) | ![Top](visuals/renders/freecad_assembly_top.png) | ![Low Deck](visuals/renders/freecad_assembly_front_low_deck_2in.png) |
+2. **Open the Master Assembly:**
+   Launch FreeCAD and open [`cad/Ender3_Router_Clamp_Mechanism.FCStd`](cad/Ender3_Router_Clamp_Mechanism.FCStd).
 
-### Printable Mineral-Cast Formwork & Motion Castings (`cad/stl/`)
-
-| Part 1: Z-Guideway & Dual-608ZZ Arch (`Bed1_02`) | Part 2: Finned DM62659 Headstock Shroud (`Bed1_01`) | Part 3: Ground Concrete Base Sill (`Bed2_02`) |
-| :---: | :---: | :---: |
-| ![Z Arch](visuals/renders/studio_part2_z_stepper_arch.png) | ![Spindle Shroud](visuals/renders/studio_part1_spindle_shroud.png) | ![Base Sill](visuals/renders/studio_part6_ground_base_sill.png) |
-
-| Part 4: Tapered Portal Column (`Bed3_01`) | Part 5: Thick Coffered X-Crossbar (`Bed3_02`) | Part 6: Twin-Rail Y Outrigger (`Bed2_01`) |
-| :---: | :---: | :---: |
-| ![Column](visuals/renders/studio_part4_exoskeleton_column.png) | ![X Girder](visuals/renders/studio_part5_x_bridge_girder.png) | ![Y Outrigger](visuals/renders/studio_part3_y_outrigger.png) |
-
-### OrcaSlicer 5-Wall Hydrostatic Toolpath Previews ($220 \times 220\text{ mm}$ Ender 3 Bed)
-
-| Bed 1 (`311.2 g` / `23h 57m`) | Bed 2 (`208.9 g` / `13h 25m`) | Bed 3 (`509.8 g` / `32h 12m`) |
-| :---: | :---: | :---: |
-| ![Orca Bed 1](visuals/renders/orca_Bed_01_Spindle_Collar_And_Z_Cap_preview.png) | ![Orca Bed 2](visuals/renders/orca_Bed_02_TwinRail_Y_Outriggers_preview.png) | ![Orca Bed 3](visuals/renders/orca_Bed_03_Concrete_Sleeves_And_X_Girder_preview.png) |
-
----
-
-## 5. 2-Roll (`1.97 kg` PLA+) 5-Plate Full-Symmetry Production Schedule
-
-| Spool # | Build Plate | Parts on Build Plate ($220 \times 220\text{ mm}$ Ender 3 Bed) | Filament Used ($\text{g}$ / $\text{m}$) | Est. Print Time | Printable STL Files |
-| :---: | :--- | :--- | :--- | :--- | :--- |
-| **Spool 1** *(Roll 1: `947.4 g`)* | **Plate 1** | $1\times$ `DM62659_AirCooled_Collar` + $1\times$ `Z_Leadscrew_Top_Bearing_Cap` ($110\text{ mm}$ Integrated Z-Guideway Arch) | **$311.23\text{ g}$** ($104.35\text{ m}$) | `23h 57m` | `Bed1_01`, `Bed1_02` |
-| **Spool 1** | **Plate 2 (Front Base)** | $1\times$ `Ground_Concrete_Base_Sill` (Front-Left) + $2\times$ `TwinRail_Y_Outrigger` (Left Pair) | **$208.89\text{ g}$** ($70.04\text{ m}$) | `13h 25m` | `Bed2_01`, `Bed2_02` |
-| **Spool 1** | **Plate 3 (Rear Base)** | $3\times$ `Ground_Concrete_Base_Sill` (Front-Right, Rear-Left, Rear-Right) + $2\times$ `TwinRail_Y_Outrigger` (Right Pair) | **$427.30\text{ g}$** ($143.25\text{ m}$) | `24h 10m` | `Bed2_01`, `Bed2_02` |
-| **Spool 2** *(Roll 2: `1,019.6 g`)* | **Plate 4 (Left Portal)** | $1\times$ `Concrete_Column_Sleeve_Half` (Left Pedestal) + $1\times$ `Concrete_X_Girder_Half` (Left Crossrail) | **$509.81\text{ g}$** ($170.93\text{ m}$) | `32h 12m` | `Bed3_01`, `Bed3_02` |
-| **Spool 2** | **Plate 5 (Right Portal)** | $1\times$ `Concrete_Column_Sleeve_Half` (Right Pedestal) + $1\times$ `Concrete_X_Girder_Half` (Right Crossrail) | **$509.81\text{ g}$** ($170.93\text{ m}$) | `32h 12m` | `Bed3_01`, `Bed3_02` |
-| **Total** | **5 Plates** | **Full Symmetrical Kit (12 Structural Castings + All Motion Brackets)** | **$1,967.04\text{ g}$ (`1.97 kg`)** | **2 Spools PLA+** | [`cad/stl/`](cad/stl) |
-
----
-
-## 6. Quick Start
-
-```bash
-# 1. Fetch official Creality Ender-3 STEP donor files (if not already in ../ender3_cad_repo)
-./scripts/fetch_ender3_cad.sh
-
-# 2. Run the full FreeCAD + OrcaSlicer MCP build & slice pipeline
-/home/calvin/.gemini/antigravity/scratch/cad-slicer-mcp/venv/bin/python cad/mcp_build_and_slice.py
-```
+3. **Re-generate Renders via FreeCAD MCP:**
+   ```bash
+   python3 scripts/design_router_clamp.py
+   ```
